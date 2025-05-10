@@ -3,7 +3,10 @@
 ## Memory
 
 
-![memory2](https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47)
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47" alt="memory2">
+</p>
 
 
 Simple memory game with code driving the randomizing of cards.
