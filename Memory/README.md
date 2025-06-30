@@ -1,8 +1,5 @@
-# Unity-Games
-
-## Memory
-
-
+# Re:memoria
+![image](https://github.com/user-attachments/assets/0c8964f8-721a-4b91-a135-2b794a5c2dc2)
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47" alt="memory2">
@@ -13,7 +10,7 @@ Simple memory game with code driving the randomizing of cards.
 The cards are created in code to allow different number of cards.
 Added some animations of the background to make it more interesting.
 
-## TODO
+# TODO
 - [ ] Make sure all the cards are visible based on screen regardless the number of cards.
 
 - [ ] Create a menu to start, a pop up when game is over and a menu that you can access whenever.
@@ -23,7 +20,7 @@ Added some animations of the background to make it more interesting.
 - [ ] Add some chill guitar music.
 
 
-### Obstacles along the way
+## Obstacles along the way
 
 Thought I could create a simple double-sided shader for turning the cards. 
 I was thining of creating a box, but settled with 2 facing sprites and letting them rotate around a pivot point.
