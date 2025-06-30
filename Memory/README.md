@@ -5,25 +5,29 @@
   <img src="https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47" alt="memory2">
 </p>
 
-
+## Idea
 Simple memory game with code driving the randomizing of cards.
+
+## Backstory
+The cowboy is talking to someone, and he needs to pair items to communicate with them.
+
+## To Do
+In the original game, you flip all the cards first, then make pairs. In this version, every time you match two cards, a lamp in the thought-cloud lights up and backlights the icons. Also add a tornado effect that shuffles the cards inside the cloud.
+
+- [ ] Create a menu to start, a pop up when game is over and a menu that you can access whenever.
+- [ ] Add some chill guitar music.
+- [ ] Create highscore based on time or number of flips.
+
 The cards are created in code to allow different number of cards.
 Added some animations of the background to make it more interesting.
 
-# TODO
-- [ ] Make sure all the cards are visible based on screen regardless the number of cards.
 
-- [ ] Create a menu to start, a pop up when game is over and a menu that you can access whenever.
-
-- [ ] Create highscore based on time or number of flips.
-
-- [ ] Add some chill guitar music.
-
+# Development
 
 ## Obstacles along the way
 
 Thought I could create a simple double-sided shader for turning the cards. 
-I was thining of creating a box, but settled with 2 facing sprites and letting them rotate around a pivot point.
+I was thinking of creating a box, but settled with 2 facing sprites and letting them rotate around a pivot point.
 
 
 ![Memory cards](https://github.com/user-attachments/assets/677f7a85-971a-4b5e-971a-3eea0d492f7f)
