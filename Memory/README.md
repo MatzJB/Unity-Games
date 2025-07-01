@@ -1,9 +1,6 @@
 # Re:memoria
 ![image](https://github.com/user-attachments/assets/0c8964f8-721a-4b91-a135-2b794a5c2dc2)
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47" alt="memory2">
-</p>
 
 ## Idea
 The classic "memory" game.
@@ -35,6 +32,16 @@ I also thought about matching 3 or 4 cards but that is probably too difficult.
 
 
 # Development
+
+First version spring 2020:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47" alt="memory2">
+</p>
+
+
+Updated version (didn't touch the code in 5 years) 2025:
+
 
 ## Obstacles along the way
 
