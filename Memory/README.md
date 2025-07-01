@@ -29,8 +29,7 @@ I also thought about matching 3 or 4 cards but that is probably too difficult.
 - [ ] start with 8 cards, then next game 12, then increase the number of cards
 - [ ] add JSON with levels
 - [ ] between games, introduce the new cards floating int the cloud and enter a new scene, the cowboy has walked quite a bit
-- [ ] at the end, the arrives in mexico and he gets his reward, some food, stringing together what the cards showed previously
-
+- [ ] at the end, the arrives in mexico and he gets his reward, some food, stringing together what the cards showed previousl
 
 
 
@@ -38,6 +37,10 @@ I also thought about matching 3 or 4 cards but that is probably too difficult.
 # Development
 
 ## Obstacles along the way
+
+### Placing the cards
+In my first version I placed the cards using a hard-coded position and I calculated the positions of the cards based on the monitor size. This is always messy but I wasn't aware of Grid and it made it difficult to move around the cards where I wanted them to be. So, I used Grid instead, which solves all of the details for me.
+https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Grid.html
 
 ### Procedurally generated cards
 The cards were created in code to allow different number of cards. I now settle for 2 matchings, 3 is too difficult to manange for players.
