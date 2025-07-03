@@ -46,8 +46,38 @@ Updated version (didn't touch the code in 5 years) 2025:
 ## Obstacles along the way
 
 ### Placing the cards
-In my first version I placed the cards using a hard-coded position and I calculated the positions of the cards based on the monitor size. This is always messy but I wasn't aware of Grid and it made it difficult to move around the cards where I wanted them to be. So, I used Grid instead, which solves all of the details for me.
+In my first version I placed the cards using a hard-coded position and I calculated the positions of the cards based on the monitor size. 
+I am aware there is `Grid` but I just wanted to get started without extra obstacles. Well, this was one obstacle regardless.
 https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Grid.html
+So, I settled on a solution that gets the position of the cloud where the cards are supposed to be. I realized that the card size is not normalized, which made my head ache (why didn't I normalize the size of the card, makes life so much easier), so I finally normalized the card dimensions.
+I calculate the width of the cloud, the origin and I just scale the Cards which all the cards are under and voila.
+I instanciate the card object and I name it based on the index in the 2d array, so when I need to know what card I hit, I extract that information from the card name.
+Note to self: I can add this metadata to the object without having to parse the string, right?
+
+
+
+### Making the cards actually float
+I wanted the cards look as though they really float. The actual card node has flip animation, so I couldn't add the rotation there, it will reset because it is keyframed. So my solution was to add a parent node to that node, I call it Card. 
+```
+**Before**
+
++ Cards
+    + the_card_1_1 (holds animation)
+         master_card
+         master_card_back
+    ...
+
+**After**
+
++ Cards
+    + Card_1_1 (holds initial rotation)
+       + the_card_1_1 (holds animation)
+            master_card
+            master_card_back
+    ...
+```
+
+
 
 ### Procedurally generated cards
 The cards were created in code to allow different number of cards. I now settle for 2 matchings, 3 is too difficult to manange for players.
