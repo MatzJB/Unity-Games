@@ -18,11 +18,11 @@ public class CreateCards : MonoBehaviour
     static int numberOfGroups = 2; //2 in game "memory"
     public Card[,] cards = new Card[numberOfRows, numberOfColumns];
     public Vector3 inBetweenSpace = new Vector3(0.0f, 0.0f, 0.0f);
-    List<Vector2> turnedCards = new List<Vector2>(); // order and which cards have been turned
+    //List<Vector2> turnedCards = new List<Vector2>(); // order and which cards have been turned
     Card currentCard = new Card();
     Card previousCard = new Card();
     int numberOfTurns = 0;
-    UnityEvent m_MyEvent; //todo: add this?
+    //UnityEvent m_MyEvent; //todo: add this?
     float startTime;
     /*
      To do: start with all cards facing up and turning down
@@ -31,12 +31,25 @@ public class CreateCards : MonoBehaviour
 
      */
 
+    public static CreateCards Instance;          // simple singleton
+
+    void Awake() => Instance = this;             // keep pointer
+
+    public void HandleClick(int i, int j, GameObject mesh)
+    {
+        Card c = cards[i, j];
+        if (c.GetState() != Card.State.FaceDown) return;
+
+        c.SetState(Card.State.FaceUp);
+        mesh.GetComponent<Animation>().Play("Flip");
+        // …rest of your turn-handling logic
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("initializing cards...");
         InitCards();
-
         startTime = Time.realtimeSinceStartup;
 
         StartCoroutine(FaceUpAllCards(true, 0, true));
@@ -121,7 +134,7 @@ public class CreateCards : MonoBehaviour
         var cloud = GameObject.Find("Cloud");
         if (cloud == null)
         {
-        Debug.LogError("No cloud were found");
+        Debug.LogError("No clouds were found");
         return new Bounds();
     }
         var rends = cloud.GetComponentsInChildren<Renderer>();
@@ -143,13 +156,9 @@ public class CreateCards : MonoBehaviour
     // Find the board and places cards randomly
     public void InitCards()
     {
-        //check that this works -MJB
-        /*
-         In order to create a game with k cards, we need to have k/2 pairs of cards.
-         */
         int tot = numberOfRows * numberOfColumns;
         int indexTotal = tot % numberOfGroups;
-        int number = 0;
+        //int number = 0;
         int groupIndex = -1;
 
         for (int i = 0; i < numberOfRows; i++)
@@ -175,17 +184,13 @@ public class CreateCards : MonoBehaviour
         GameObject the_card = GameObject.Find("the_card"); //animation
         GameObject master_card = GameObject.Find("master_card");
         GameObject master_card_back = GameObject.Find("master_card_back");
-
-
         GameObject canvas = GameObject.Find("Canvas");
         GameObject background = GameObject.Find("Background");
         GameObject cloud = GameObject.Find("Cloud");
 
-
         //new, it makes sense to normalize so we don't need to bother with math so much
         master_card.transform.NormalizeSize(1f);
         master_card_back.transform.NormalizeSize(1f);
-
 
         var cardDimensions = master_card_back.GetComponent<Renderer>().bounds.size;
 
@@ -216,13 +221,6 @@ public class CreateCards : MonoBehaviour
         
         Debug.Log(" cards origin :" + cardsOrigin);
 
-   
-        //numberOfRows
-        //float widthSpace = width / numberOfColumns;
-        //float heightSpace = height / numberOfRows;
-        //move the card entity intead of each card?
-
-
         float countMax = Mathf.Max(numberOfRows, numberOfColumns);
         card_entity.transform.position = new Vector3(0, 0, 0);
 
@@ -238,9 +236,6 @@ public class CreateCards : MonoBehaviour
                 card.transform.SetParent(card_entity.transform);
                 card.tag = "Card";
 
-                
-             
-
 
                 string filename = "card textures/flags_1.1/" + GetCardFromDeck(i, j);
                 Texture2D tex = Resources.Load<Texture2D>(filename);
@@ -255,10 +250,10 @@ public class CreateCards : MonoBehaviour
         card_entity.transform.position = cardsOrigin;
         float scaling = Mathf.Max(width, height) / Mathf.Max(numberOfRows+1, numberOfColumns+1);
         card_entity.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
+               
+        card_.tag = "Untagged";
 
-        //card_entity.transform.scale= cardsOrigin;
-        //scale everything no?
-
+        //Destroy(card_);
     }
 
     // returns file name for card from a number
@@ -325,7 +320,7 @@ public class CreateCards : MonoBehaviour
                     Transform childT = go.transform.GetChild(0);
                     GameObject childGo = childT.gameObject;
                     Animation anim = childGo.GetComponent<Animation>();
-                    go.tag = "Card";// testing
+                    //go.tag = "Card";// testing
 
                     //Animation anim = parpar.GetComponent<Animation>();
                     if (faceUp)
@@ -378,9 +373,7 @@ public class CreateCards : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //we never reach this area?
-
-
+      
         //update the position of each card each frame, to have them floating
         float elapsedSeconds = Time.realtimeSinceStartup - startTime;
         float y = Mathf.Cos(elapsedSeconds / 60) * 30;
@@ -439,11 +432,13 @@ public class CreateCards : MonoBehaviour
             {
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                //the_card has a mesh collider
+                //the_card also has a Card tag so it is easier to filter
 
                 if (Physics.Raycast(ray, out hit))
                 {
 
-                    if (hit.collider.gameObject.tag != "Card")
+                    if (!hit.collider.gameObject.transform.CompareTag("Card"))
                     {
                         return;
                     }
@@ -451,10 +446,14 @@ public class CreateCards : MonoBehaviour
                     //if (!hit.collider.gameObject.name.StartsWith("master_card_"))
                     //    return;
 
-                    var test2 = hit.collider.gameObject;
-                    var parpar = test2.transform.parent;
-                    string card_index = parpar.transform.parent.name;
-                    Animation anim = parpar.GetComponent<Animation>();
+                    var go = hit.collider.gameObject;
+                    var parpar = go.transform.parent;
+
+                    var parparpar = parpar.transform.parent;
+                    string card_index = parpar.name;
+                    Debug.Log(card_index);
+
+                    Animation anim = go.GetComponent<Animation>();
                     Vector2 vv = GetCardFromGameObject(card_index);
                     currentCard = cards[(int)vv.x, (int)vv.y];
 

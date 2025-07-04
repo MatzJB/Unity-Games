@@ -9,7 +9,6 @@ public class Interaction : MonoBehaviour
     public float smoothSpeed = 10f;
 
     private Vector3 targetScale;
-    Light ideaLight;
 
     void Start()
     {
@@ -24,13 +23,17 @@ public class Interaction : MonoBehaviour
             targetScale,
             smoothSpeed * Time.deltaTime
         );
-
-
     }
 
     void OnMouseEnter()
     {
         targetScale = defaultScale * hoverScaleFactor;
+    }
+    //click
+void OnMouseUpAsButton()
+    {
+
+
     }
 
     void OnMouseExit()
