@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 88af0a49d5bf93f43a867fc4c549a44d
+guid: 5a838cc702ec79243a54779c2d3c31bb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 603645287242772497
-    second: desert_0
+      213: -7086471620097727725
+    second: small cloud 3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: desert_0
+      name: small cloud 3_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1536
-        height: 1024
+        x: 829
+        y: 299
+        width: 1026
+        height: 896
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 110b174c034906800800000000000000
-      internalID: 603645287242772497
+      spriteID: 31320357b9bc7ad90800000000000000
+      internalID: -7086471620097727725
       vertices: []
       indices: 
       edges: []

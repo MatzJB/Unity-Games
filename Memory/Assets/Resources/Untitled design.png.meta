@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 88af0a49d5bf93f43a867fc4c549a44d
+guid: a3fa399c0fcb6054d92a7fe0c14e7755
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 603645287242772497
-    second: desert_0
+      213: -2895157278119961449
+    second: Untitled design_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: desert_0
+      name: Untitled design_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1536
-        height: 1024
+        x: 1077
+        y: 94
+        width: 1045
+        height: 1559
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 110b174c034906800800000000000000
-      internalID: 603645287242772497
+      spriteID: 79cd5c47bc552d7d0800000000000000
+      internalID: -2895157278119961449
       vertices: []
       indices: 
       edges: []

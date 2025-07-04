@@ -3,11 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets
 {
     static class Misc
     {
+
+        public static void NormalizeSize(this Transform t, float targetSize = 1f)
+        {
+            var rends = t.GetComponentsInChildren<Renderer>();
+            if (rends.Length == 0)
+            {
+                Debug.LogWarning("No renderers found to compute bounds");
+                return;
+            }
+
+            var bounds = rends[0].bounds;
+            for (int i = 1; i < rends.Length; i++)
+                bounds.Encapsulate(rends[i].bounds);
+
+            float maxDim = Mathf.Max(bounds.size.x, bounds.size.y, bounds.size.z);
+            if (maxDim <= 0f)
+            {
+                Debug.LogWarning("Bounds have zero size");
+                return;
+            }
+
+            float scaleFactor = targetSize / maxDim;
+
+            t.localScale = t.localScale * scaleFactor;
+        }
+
+
         public static void Randomize<T>(this T[,] values)
         {
             // Get the dimensions.

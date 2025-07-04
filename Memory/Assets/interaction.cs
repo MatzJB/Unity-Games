@@ -2,23 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class interaction : MonoBehaviour
+public class Interaction : MonoBehaviour
 {
-    Vector3 defaultScale;
+    private Vector3 defaultScale;
+    public float hoverScaleFactor = 1.2f;
+    public float smoothSpeed = 10f;
 
-    private void Start()
+    private Vector3 targetScale;
+    Light ideaLight;
+
+    void Start()
     {
         defaultScale = transform.localScale;
+        targetScale = defaultScale;
     }
 
-    void OnMouseOver()
+    void Update()
     {
-        transform.localScale = defaultScale * 1.1f;
+        transform.localScale = Vector3.Lerp(
+            transform.localScale,
+            targetScale,
+            smoothSpeed * Time.deltaTime
+        );
+
+
+    }
+
+    void OnMouseEnter()
+    {
+        targetScale = defaultScale * hoverScaleFactor;
     }
 
     void OnMouseExit()
     {
-        transform.localScale = defaultScale;
+        targetScale = defaultScale;
     }
 
+
 }
+

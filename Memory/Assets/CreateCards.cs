@@ -4,6 +4,12 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.Events;
 using System.Linq;
+using Assets;
+using UnityEditor;
+using static CreateCards;
+using UnityEngine.UIElements;
+
+
 
 public class CreateCards : MonoBehaviour
 {
@@ -16,10 +22,10 @@ public class CreateCards : MonoBehaviour
     Card currentCard = new Card();
     Card previousCard = new Card();
     int numberOfTurns = 0;
-    UnityEvent m_MyEvent;
-
+    UnityEvent m_MyEvent; //todo: add this?
+    float startTime;
     /*
-     Todo: start with all cards facing up and turning down
+     To do: start with all cards facing up and turning down
      when it's finished, show a "congratulations" menu and let the player "play again"
      add a user/password menu
 
@@ -30,6 +36,8 @@ public class CreateCards : MonoBehaviour
     {
         Debug.Log("initializing cards...");
         InitCards();
+
+        startTime = Time.realtimeSinceStartup;
 
         StartCoroutine(FaceUpAllCards(true, 0, true));
         StartCoroutine(FaceUpAllCards(false, 2, true));
@@ -69,6 +77,7 @@ public class CreateCards : MonoBehaviour
         Type type;
         State state = Card.State.Uninitialized;
 
+
         public State GetState()
         {
             return this.state;
@@ -106,13 +115,43 @@ public class CreateCards : MonoBehaviour
         return vec;
     }
 
+
+    Bounds GetCloudBounds()
+    {
+        var cloud = GameObject.Find("Cloud");
+        if (cloud == null)
+        {
+        Debug.LogError("No cloud were found");
+        return new Bounds();
+    }
+        var rends = cloud.GetComponentsInChildren<Renderer>();
+        if (rends.Length == 0)
+        {
+            Debug.LogError("No Renderer on Cloud or its children");
+            return new Bounds();
+        }
+
+        var bounds = rends[0].bounds;
+        for (int i = 1; i < rends.Length; i++)
+            bounds.Encapsulate(rends[i].bounds);
+
+        return bounds;
+    }
+
+
+
     // Find the board and places cards randomly
     public void InitCards()
     {
+        //check that this works -MJB
+        /*
+         In order to create a game with k cards, we need to have k/2 pairs of cards.
+         */
         int tot = numberOfRows * numberOfColumns;
         int indexTotal = tot % numberOfGroups;
         int number = 0;
         int groupIndex = -1;
+
         for (int i = 0; i < numberOfRows; i++)
         {
             for (int j = 0; j < numberOfColumns; j++)
@@ -130,12 +169,23 @@ public class CreateCards : MonoBehaviour
         }
 
         Assets.Misc.Randomize(cards);
-
+        
         GameObject card_entity = GameObject.Find("Cards");
-        GameObject the_card = GameObject.Find("the_card");
+        GameObject card_ = GameObject.Find("Card"); // for floating misaligned cards
+        GameObject the_card = GameObject.Find("the_card"); //animation
+        GameObject master_card = GameObject.Find("master_card");
         GameObject master_card_back = GameObject.Find("master_card_back");
+
+
         GameObject canvas = GameObject.Find("Canvas");
         GameObject background = GameObject.Find("Background");
+        GameObject cloud = GameObject.Find("Cloud");
+
+
+        //new, it makes sense to normalize so we don't need to bother with math so much
+        master_card.transform.NormalizeSize(1f);
+        master_card_back.transform.NormalizeSize(1f);
+
 
         var cardDimensions = master_card_back.GetComponent<Renderer>().bounds.size;
 
@@ -157,27 +207,58 @@ public class CreateCards : MonoBehaviour
         Vector2 cardOffset = new Vector2(ww / 2, 0);
         Vector3 tmp = new Vector3(cardScale.x, cardScale.y, 0);
 
+        // new code:
+        Bounds cardBounds = GetCloudBounds();
+
+        float width = cardBounds.max.x - cardBounds.min.x;
+        float height = cardBounds.max.y - cardBounds.min.y;
+        Vector2 cardsOrigin = new(cardBounds.min.x + 0.2f*width, cardBounds.min.y);
+        
+        Debug.Log(" cards origin :" + cardsOrigin);
+
+   
+        //numberOfRows
+        //float widthSpace = width / numberOfColumns;
+        //float heightSpace = height / numberOfRows;
+        //move the card entity intead of each card?
+
+
+        float countMax = Mathf.Max(numberOfRows, numberOfColumns);
+        card_entity.transform.position = new Vector3(0, 0, 0);
+
         for (int i = 0; i < numberOfRows; i++)
         {
             for (int j = 0; j < numberOfColumns; j++)
             {
-                GameObject go;
-                go = (GameObject)Instantiate(the_card);
-                go.name = "card_" + i + "_" + j;
+                GameObject card = (GameObject) Instantiate(card_);
+                card.name = "card_" + i + "_" + j;
                 Material mm = new Material(Shader.Find("Unlit/Texture"));
-                //offset card with scale/2, because pivot point is center of card
-                go.transform.position = new Vector2(250, 100) + new Vector2(j * cardDimensions.x * 1.1f, i * cardDimensions.y *1.1f);
-                go.transform.SetParent(card_entity.transform);
+                card.transform.position = new Vector2(j, i);
+                card.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
+                card.transform.SetParent(card_entity.transform);
+                card.tag = "Card";
+
+                
+             
+
+
                 string filename = "card textures/flags_1.1/" + GetCardFromDeck(i, j);
                 Texture2D tex = Resources.Load<Texture2D>(filename);
                 mm.mainTexture = tex;
+                //Debug.Log(" card pos" + go.transform.position);
 
-                Transform child = go.transform.GetChild(0);
+                Transform child = card.transform.GetChild(0).GetChild(0);
                 child.GetComponent<Renderer>().material = mm;
             }
         }
 
-        card_entity.transform.position = new Vector2(0.0f, 0.0f);
+        card_entity.transform.position = cardsOrigin;
+        float scaling = Mathf.Max(width, height) / Mathf.Max(numberOfRows+1, numberOfColumns+1);
+        card_entity.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
+
+        //card_entity.transform.scale= cardsOrigin;
+        //scale everything no?
+
     }
 
     // returns file name for card from a number
@@ -241,8 +322,12 @@ public class CreateCards : MonoBehaviour
                 {
                     //find a way to attach object information to the 3d object
                     GameObject go = GameObject.Find("card_" + i + "_" + j);
-                    var parpar = go;
-                    Animation anim = parpar.GetComponent<Animation>();
+                    Transform childT = go.transform.GetChild(0);
+                    GameObject childGo = childT.gameObject;
+                    Animation anim = childGo.GetComponent<Animation>();
+                    go.tag = "Card";// testing
+
+                    //Animation anim = parpar.GetComponent<Animation>();
                     if (faceUp)
                         anim.Play("Flip");
                     else
@@ -293,6 +378,51 @@ public class CreateCards : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //we never reach this area?
+
+
+        //update the position of each card each frame, to have them floating
+        float elapsedSeconds = Time.realtimeSinceStartup - startTime;
+        float y = Mathf.Cos(elapsedSeconds / 60) * 30;
+        float elapsedMs = elapsedSeconds * 1000f;
+
+        var cardObject = GameObject.FindGameObjectsWithTag("Card");
+        foreach (var card in cardObject)
+        {
+            // find parent, and get card_i_j
+            Vector2 vv = GetCardFromGameObject(card.name);
+            
+
+            card.transform.position = new Vector3(
+                card.transform.position.x,
+               card.transform.position.y + 0.05f*Mathf.Cos(elapsedSeconds+ vv.x%5 + vv.y),
+                card.transform.position.z
+            );
+
+
+            //float z = Random.Range(-5f, 5f);
+            float angle = Mathf.Cos(vv.y) * 10;
+
+            //var e = transform.localEulerAngles;
+            //e.z = angle;
+            //transform.localEulerAngles = e;
+
+            card.transform.localEulerAngles = new Vector3(
+        0,
+        0,
+        angle
+    );
+
+            //transform.rotation = Quaternion.Euler(
+            //    transform.eulerAngles.x,
+            //    transform.eulerAngles.y,
+            //    angle
+            //);
+            //card.transform.localEulerAngles = e;
+
+        }
+
+
         if (GameOver())
         {
             StartCoroutine(FaceUpAllCards(false, 1, true));
@@ -309,13 +439,23 @@ public class CreateCards : MonoBehaviour
             {
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                
+
                 if (Physics.Raycast(ray, out hit))
                 {
+
+                    if (hit.collider.gameObject.tag != "Card")
+                    {
+                        return;
+                    }
+
+                    //if (!hit.collider.gameObject.name.StartsWith("master_card_"))
+                    //    return;
+
                     var test2 = hit.collider.gameObject;
                     var parpar = test2.transform.parent;
+                    string card_index = parpar.transform.parent.name;
                     Animation anim = parpar.GetComponent<Animation>();
-                    Vector2 vv = GetCardFromGameObject(parpar.name);
+                    Vector2 vv = GetCardFromGameObject(card_index);
                     currentCard = cards[(int)vv.x, (int)vv.y];
 
                     if (currentCard.GetState() == Card.State.FaceDown)
