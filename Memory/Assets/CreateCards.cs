@@ -388,13 +388,14 @@ public class CreateCards : MonoBehaviour
 
             card.transform.position = new Vector3(
                 card.transform.position.x,
-               card.transform.position.y + 0.05f*Mathf.Cos(elapsedSeconds+ vv.x%5 + vv.y),
+               card.transform.position.y + 0.007f*Mathf.Cos(elapsedSeconds+ vv.x%5 + vv.y),//make this value relative to the card height
                 card.transform.position.z
             );
 
 
             //float z = Random.Range(-5f, 5f);
-            float angle = Mathf.Cos(vv.y) * 10;
+            float angle = Mathf.Cos(vv.y + 2f*elapsedSeconds) * 5;
+            //Debug.Log(angle);
 
             //var e = transform.localEulerAngles;
             //e.z = angle;
@@ -438,7 +439,7 @@ public class CreateCards : MonoBehaviour
                 if (Physics.Raycast(ray, out hit))
                 {
 
-                    if (!hit.collider.gameObject.transform.CompareTag("Card"))
+                    if (!hit.collider.gameObject.transform.parent.CompareTag("Card"))
                     {
                         return;
                     }

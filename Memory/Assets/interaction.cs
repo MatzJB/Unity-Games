@@ -32,6 +32,9 @@ public class Interaction : MonoBehaviour
     //click
 void OnMouseUpAsButton()
     {
+        Debug.Log("I hit a card!");
+
+
 
 
     }
