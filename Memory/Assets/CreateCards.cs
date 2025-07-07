@@ -406,7 +406,7 @@ public class CreateCards : MonoBehaviour
 
             card.transform.position = new Vector3(
                 card.transform.position.x,
-               card.transform.position.y + 0.007f*Mathf.Cos(elapsedSeconds+ vv.x%5 + vv.y),//make this value relative to the card height
+               card.transform.position.y + 0.2f*Mathf.Cos(elapsedSeconds+ vv.x%5 + vv.y),//make this value relative to the card height
                 card.transform.position.z
             );
 
