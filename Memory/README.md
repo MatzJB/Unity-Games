@@ -26,7 +26,7 @@ Added some animations of the background to make it more interesting.
 
 ## Obstacles along the way
 
-I am using URP at the moment with a fullscren effect. I wanted to add a simple haze effect but I realized that all opaque object are the only ones getting the effect, not the transparent objects. Only a problem with the tumble weed effect. I do not at this time know if this will affect anything in the game that I want to add later, because I might want other full screen effect (rain etc) I will probably have to bite the apple and just fix the order of the shader so it is applied AFTER transparent objects are drawn.
+I am using URP at the moment with a fullscren effect. I wanted to add a simple haze effect but I realized that all opaque object are the only ones getting the effect, not the transparent objects. Only a problem with the tumble weed effect. I do not at this time know if this will affect anything in the game that I want to add later, because I might want other full screen effect (rain etc) I will probably have to bite the apple and just fix the order of the shader so it is applied AFTER transparent objects are drawn. I added a script that takes the RGB after transparency. I do not think it was necessary. I managed to realize that the material I needed was unlit/transparent cutout for the "transparent" sprites and it works. I will backtrack and see if I can remove the material script.
 
 
 
