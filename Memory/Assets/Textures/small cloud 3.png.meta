@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 95580749ede9ed242928b10e34cbbaa3
+guid: 5a838cc702ec79243a54779c2d3c31bb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7780264574027006942
-    second: card2_0
+      213: -7086471620097727725
+    second: small cloud 3_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 2
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: card2_0
+      name: small cloud 3_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 679
-        height: 412
+        x: 829
+        y: 299
+        width: 1026
+        height: 896
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ed38f61986d09fb60800000000000000
-      internalID: 7780264574027006942
+      spriteID: 31320357b9bc7ad90800000000000000
+      internalID: -7086471620097727725
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      card2_0: 7780264574027006942
+      small cloud 3_0: -7086471620097727725
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -215,8 +215,12 @@ public class CreateCards : MonoBehaviour
         // new code:
         Bounds cardBounds = GetCloudBounds();
 
+
+       
         float width = cardBounds.max.x - cardBounds.min.x;
         float height = cardBounds.max.y - cardBounds.min.y;
+        if (width == 0)
+            Debug.LogError("Card width is zero, check the card prefab and its renderer");
         Vector2 cardsOrigin = new(cardBounds.min.x + 0.2f*width, cardBounds.min.y);
         
         Debug.Log(" cards origin :" + cardsOrigin);
@@ -250,6 +254,9 @@ public class CreateCards : MonoBehaviour
                 // create one shared material for the whole deck (optional)
                 if (rend.sharedMaterial == null || rend.sharedMaterial.shader != cardShader)
                     rend.sharedMaterial = new Material(cardShader);
+
+
+                card.tag = "Card";
 
                 // per-card override
                 var mpb = new MaterialPropertyBlock();

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1e8dfb82a6df9314a8ead09ddd25c4ce
+guid: 21fcd9b34e3586041bbadf2bf3aa092d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -395944827194379550
-    second: big_cloud_thickness_0
+      213: -2034009598963902477
+    second: small cloud ball_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: big_cloud_thickness_0
+      name: small cloud ball_0
       rect:
         serializedVersion: 2
-        x: 11
-        y: 0
-        width: 280
-        height: 171
+        x: 1170
+        y: 502
+        width: 610
+        height: 603
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2e2fc680742518af0800000000000000
-      internalID: -395944827194379550
+      spriteID: 3f79500eb0fb5c3e0800000000000000
+      internalID: -2034009598963902477
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      big_cloud_thickness_0: -395944827194379550
+      small cloud ball_0: -2034009598963902477
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
