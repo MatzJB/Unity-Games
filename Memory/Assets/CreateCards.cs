@@ -183,16 +183,16 @@ public class CreateCards : MonoBehaviour
         GameObject card_ = GameObject.Find("Card"); // for floating misaligned cards
         GameObject the_card = GameObject.Find("the_card"); //animation
         GameObject master_card = GameObject.Find("master_card");
-        GameObject master_card_back = GameObject.Find("master_card_back");
+        //GameObject master_card_back = GameObject.Find("master_card_back");
         GameObject canvas = GameObject.Find("Canvas");
         GameObject background = GameObject.Find("Background");
         GameObject cloud = GameObject.Find("Cloud");
 
         //new, it makes sense to normalize so we don't need to bother with math so much
-        master_card.transform.NormalizeSize(1f);
-        master_card_back.transform.NormalizeSize(1f);
+        //master_card.transform.NormalizeSize(1f);
+        //master_card_back.transform.NormalizeSize(1f);
 
-        var cardDimensions = master_card_back.GetComponent<Renderer>().bounds.size;
+        var cardDimensions = master_card.GetComponent<Renderer>().bounds.size;
 
         RectTransform rt = canvas.GetComponent<RectTransform>();
         Vector2 canvasWidthHeight = new Vector2(rt.rect.width, rt.rect.height);
@@ -223,27 +223,38 @@ public class CreateCards : MonoBehaviour
 
         float countMax = Mathf.Max(numberOfRows, numberOfColumns);
         card_entity.transform.position = new Vector3(0, 0, 0);
+        Shader cardShader = Shader.Find("Shader Graphs/Card");
+        int frontTexPropId = Shader.PropertyToID("_FrontTexture");
 
         for (int i = 0; i < numberOfRows; i++)
         {
             for (int j = 0; j < numberOfColumns; j++)
             {
-                GameObject card = (GameObject) Instantiate(card_);
-                card.name = "card_" + i + "_" + j;
-                Material mm = new Material(Shader.Find("Unlit/Texture"));
-                card.transform.position = new Vector2(j, i);
+                GameObject card = Instantiate(card_);
+                card.name = $"card_{i}_{j}";
+                card.transform.SetParent(card_entity.transform, false);
+                card.transform.localPosition = new Vector3(j, i, 0);
                 card.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
-                card.transform.SetParent(card_entity.transform);
-                card.tag = "Card";
 
+                // load texture for this slot
+                string path = $"card textures/flags_1.1/{GetCardFromDeck(i, j)}";
+                Texture2D tex = Resources.Load<Texture2D>(path);
 
-                string filename = "card textures/flags_1.1/" + GetCardFromDeck(i, j);
-                Texture2D tex = Resources.Load<Texture2D>(filename);
-                mm.mainTexture = tex;
-                //Debug.Log(" card pos" + go.transform.position);
+                Renderer rend = card.GetComponentInChildren<Renderer>(); // the one that’s already there
+                if (rend == null)
+                {
+                    Debug.LogError($"{card.name} has no renderer");
+                    continue;
+                }
 
-                Transform child = card.transform.GetChild(0).GetChild(0);
-                child.GetComponent<Renderer>().material = mm;
+                // create one shared material for the whole deck (optional)
+                if (rend.sharedMaterial == null || rend.sharedMaterial.shader != cardShader)
+                    rend.sharedMaterial = new Material(cardShader);
+
+                // per-card override
+                var mpb = new MaterialPropertyBlock();
+                mpb.SetTexture(frontTexPropId, tex);
+                rend.SetPropertyBlock(mpb);
             }
         }
 

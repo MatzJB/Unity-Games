@@ -30,11 +30,9 @@ public class Interaction : MonoBehaviour
         targetScale = defaultScale * hoverScaleFactor;
     }
     //click
-void OnMouseUpAsButton()
+    void OnMouseUpAsButton()
     {
         Debug.Log("I hit a card!");
-
-
 
 
     }
@@ -43,7 +41,6 @@ void OnMouseUpAsButton()
     {
         targetScale = defaultScale;
     }
-
 
 }
 

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
   m_Name: FullScreenPassRendererFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
-  injectionPoint: 450
+  m_Active: 0
+  injectionPoint: 600
   fetchColorBuffer: 1
-  requirements: 0
+  requirements: 4
   passMaterial: {fileID: -876546973899608171, guid: 8c5be6663ecbb514d86a1be61c23e72f,
     type: 3}
   passIndex: 0
@@ -48,8 +48,9 @@ MonoBehaviour:
     probeSamplingDebugTexture: {fileID: 0}
     probeVolumeBlendStatesCS: {fileID: 0}
   m_RendererFeatures:
+  - {fileID: 1762655400474741755}
   - {fileID: -1641872939860714322}
-  m_RendererFeatureMap: ae9c469d42e536e9
+  m_RendererFeatureMap: fb8bb86ebf357618ae9c469d42e536e9
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -75,3 +76,17 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &1762655400474741755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d93b3ebf922759141a562d882e196140, type: 3}
+  m_Name: FullscreenBlitFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  blitMaterial: {fileID: 2100000, guid: 1b86d9e5027ff3046957260eeda74819, type: 2}
