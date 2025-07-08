@@ -24,6 +24,10 @@ public class CreateCards : MonoBehaviour
     int numberOfTurns = 0;
     //UnityEvent m_MyEvent; //todo: add this?
     float startTime;
+
+    // if the bulb is lit meaning the cards are lit too. This is controlled by model
+    GameObject bulb;
+    Renderer bulbRenderer;
     /*
      To do: start with all cards facing up and turning down
      when it's finished, show a "congratulations" menu and let the player "play again"
@@ -31,19 +35,8 @@ public class CreateCards : MonoBehaviour
 
      */
 
-    public static CreateCards Instance;          // simple singleton
 
-    void Awake() => Instance = this;             // keep pointer
 
-    public void HandleClick(int i, int j, GameObject mesh)
-    {
-        Card c = cards[i, j];
-        if (c.GetState() != Card.State.FaceDown) return;
-
-        c.SetState(Card.State.FaceUp);
-        mesh.GetComponent<Animation>().Play("Flip");
-        // …rest of your turn-handling logic
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -54,6 +47,10 @@ public class CreateCards : MonoBehaviour
 
         StartCoroutine(FaceUpAllCards(true, 0, true));
         StartCoroutine(FaceUpAllCards(false, 2, true));
+
+        bulb = GameObject.Find("Light bulb");
+        if (bulb == null) { Debug.LogError("Light bulb not found"); return; }
+        bulbRenderer = bulb.GetComponent<Renderer>();
 
     }
 
@@ -391,7 +388,10 @@ public class CreateCards : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      
+
+   
+
+
         //update the position of each card each frame, to have them floating
         float elapsedSeconds = Time.realtimeSinceStartup - startTime;
         float y = Mathf.Cos(elapsedSeconds / 60) * 30;
@@ -425,12 +425,22 @@ public class CreateCards : MonoBehaviour
         angle
     );
 
+            int LitID = Shader.PropertyToID("_on");
+            Renderer rend = card.GetComponentInChildren<Renderer>();
+            Material mat = rend.material;
+            float f = bulbRenderer.sharedMaterial.GetInt(LitID);
+            mat.SetFloat("_lit", f);
+            Debug.Log("lit " +f);
+
             //transform.rotation = Quaternion.Euler(
             //    transform.eulerAngles.x,
             //    transform.eulerAngles.y,
             //    angle
             //);
             //card.transform.localEulerAngles = e;
+
+
+            // if lamp is on, turn shader
 
         }
 
