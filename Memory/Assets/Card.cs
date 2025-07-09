@@ -8,13 +8,14 @@ using UnityEngine;
 /// </summary>
 public class Card
 {
+    
     public enum State : ushort
     {
         FaceUp = 0,
         FaceDown = 1,
         Finished = 2,
         Uninitialized = 3,
-        Frozen = 4
+        //Frozen = 4
     }
 
     [JsonIgnore]

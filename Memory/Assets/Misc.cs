@@ -36,31 +36,31 @@ namespace Assets
         }
 
 
+        public static void Randomize<T>(this IList<T> list)
+        {
+            var rand = new System.Random();
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = rand.Next(i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+
+        // keep matrix overload if you still want it
         public static void Randomize<T>(this T[,] values)
         {
-            // Get the dimensions.
-            int num_rows = values.GetUpperBound(0) + 1;
-            int num_cols = values.GetUpperBound(1) + 1;
-            int num_cells = num_rows * num_cols;
+            int rows = values.GetLength(0);
+            int cols = values.GetLength(1);
 
-            // Randomize the array.
-            System.Random rand = new System.Random();
-            for (int i = 0; i < num_cells - 1; i++)
-            {
-                // Pick a random cell between i and the end of the array.
-                int j = rand.Next(i, num_cells);
+            var flat = new List<T>(rows * cols);
+            foreach (var v in values) flat.Add(v);
 
-                // Convert to row/column indexes.
-                int row_i = i / num_cols;
-                int col_i = i % num_cols;
-                int row_j = j / num_cols;
-                int col_j = j % num_cols;
+            flat.Randomize();                          // uses the list version above
 
-                // Swap cells i and j.
-                T temp = values[row_i, col_i];
-                values[row_i, col_i] = values[row_j, col_j];
-                values[row_j, col_j] = temp;
-            }
+            int idx = 0;
+            for (int r = 0; r < rows; r++)
+                for (int c = 0; c < cols; c++)
+                    values[r, c] = flat[idx++];
         }
     }
 }

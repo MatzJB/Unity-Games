@@ -9,6 +9,9 @@ using UnityEditor;
 using static CreateCards;
 using UnityEngine.UIElements;
 using System;
+using Unity.Android.Gradle.Manifest;
+using UnityEngine.SocialPlatforms;
+using Newtonsoft.Json;
 
 //TODO: refactor this file, move content from createCards to Interaction.cs, Card.cs,...
 
@@ -30,8 +33,6 @@ public class CreateCards : MonoBehaviour
     Renderer bulbRenderer;
     GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
-   
-
 
     // Start is called before the first frame update
     void Start()
@@ -51,76 +52,6 @@ public class CreateCards : MonoBehaviour
         bulbRenderer = bulb.GetComponent<Renderer>();
 
     }
-
-    // the card class only knows about a card and it's state
-    //will be replace with cardAsset
-    public class Card
-    {
-
-        public enum Type : ushort
-        {
-            Picture = 0,
-            Media = 1,
-        }
-        public enum State : ushort
-        {
-            FaceUp = 0,
-            FaceDown = 1,
-            Finished = 2,
-            Uninitialized = 3,
-            Frozen = 4, // frozen means the card is not active, it cannot be turned over
-        }
-
-        private int groupIndex = -1;
-        public int GroupIndex
-        {
-            get { return groupIndex; }
-            set { groupIndex = value; }
-        }
-        private int cardIndex = -1;
-        public int CardIndex
-        {
-            get { return cardIndex; }
-            set { cardIndex = value; }
-        }
-
-        Type type;
-        State state = Card.State.Uninitialized;
-
-
-        public State GetState()
-        {
-            return this.state;
-        }
-
-        public void SetState(Card.State s)
-        {
-            state = s;
-        }
-
-        public Card()
-        {
-            this.cardIndex = -1;
-            this.groupIndex = -1;
-            this.state = Card.State.Uninitialized;
-            this.type = Card.Type.Picture;
-        }
-
-        public Card(int cardIndex, int groupIndex, State s, Type t)
-        {
-            this.cardIndex = cardIndex;
-            this.groupIndex = groupIndex;
-            this.state = s;
-            this.type = t;
-        }
-    }
-
-
-
-
-
-
-
 
     Bounds GetCloudBounds()
     {
@@ -147,28 +78,22 @@ public class CreateCards : MonoBehaviour
 
 
     // Find the board and places cards randomly
-    public void InitCards()
+    public void InitCards() // load level
     {
         int tot = numberOfRows * numberOfColumns;
         int indexTotal = tot % numberOfGroups;
         //int number = 0;
         int groupIndex = -1;
+        MyGameState gameState = GameObject.Find("GameState").GetComponent<MyGameState>();
+        LevelDataReader.Load("LevelData");
+        LevelState levelData = gameState.levels[gameState.stage];
 
-        for (int i = 0; i < numberOfRows; i++)
-        {
-            for (int j = 0; j < numberOfColumns; j++)
-            {
-                int oo = i * numberOfColumns + j;
-                int cardIndex = oo % (tot / numberOfGroups);
-                int n = numberOfColumns * i + j;
+        //string path = Path.Combine(Application.streamingAssetsPath, "cards.json");
 
-                if (cardIndex == 0)
-                {
-                    groupIndex++;
-                }
-                cards[i, j] = new Card(cardIndex, groupIndex, Card.State.FaceDown, Card.Type.Picture);
-            }
-        }
+
+        string jsonString = File.ReadAllText("cardData");
+        var cards = JsonConvert.DeserializeObject<List<Card>>(jsonString);
+
 
         Assets.Misc.Randomize(cards);
 
