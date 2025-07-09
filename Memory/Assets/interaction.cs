@@ -16,6 +16,7 @@ public class Interaction : MonoBehaviour
         targetScale = defaultScale;
     }
 
+    
     void Update()
     {
         transform.localScale = Vector3.Lerp(
@@ -29,11 +30,11 @@ public class Interaction : MonoBehaviour
     {
         targetScale = defaultScale * hoverScaleFactor;
     }
-    //click
+
+    // TODO: use this instead of ray tracing in createCards
     void OnMouseUpAsButton()
     {
-        Debug.Log("I hit a card!");
-
+        //Debug.Log("I hit a card!");
 
     }
 

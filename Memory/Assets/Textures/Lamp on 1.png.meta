@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 64011be8ed125ee439981121b32239b4
+guid: c02b7a65d5d0786468790eb2225c675c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6895883907749436763
-    second: small cloud 2_0
+      213: 2558597364472591877
+    second: Lamp on 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,30 +109,17 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: small cloud 2_0
+      name: Lamp on 1_0
       rect:
         serializedVersion: 2
-        x: 487
-        y: 0
-        width: 1711
-        height: 1485
+        x: 109
+        y: 69
+        width: 769
+        height: 917
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5a223423f16ec40a0800000000000000
-      internalID: -6895883907749436763
+      spriteID: 506b3a83fb6f18320800000000000000
+      internalID: 2558597364472591877
       vertices: []
       indices: 
       edges: []
@@ -161,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      small cloud 2_0: -6895883907749436763
+      Lamp on 1_0: 2558597364472591877
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

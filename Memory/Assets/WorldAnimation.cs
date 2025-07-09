@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class AbsCosMover : MonoBehaviour
+public class WorldAnimation : MonoBehaviour
 {
+
     public Vector3 rotationAxis = Vector3.up;
     public float rotationSpeed = 90f;
     public float amplitude = 1000f;
@@ -21,7 +22,12 @@ public class AbsCosMover : MonoBehaviour
         elapsed += Time.deltaTime;
 
         float t = elapsed * 200;
-        float y = Mathf.Abs(Mathf.Cos(t / 60)) * 40;
+        float y = Mathf.Abs(Mathf.Cos(t / 60)) * 35;
+        float y_max = 40;
+
+        float tt = Mathf.Abs(Mathf.Cos(t / 60 + 2.6f)) * y_max;
+        float tumbleWeedRotationSpeed = -.3f + -0.6f * (1 - tt / y_max);
+
 
         var pos = transform.localPosition;
         pos.x = t;
@@ -29,13 +35,13 @@ public class AbsCosMover : MonoBehaviour
 
         transform.localPosition = pos;
 
-        if (transform.localPosition.x > 1000f)
+        if (transform.localPosition.x > 1500f) //TODO: hard coded
         {
             transform.localPosition = startPos;
             elapsed = -10f;
         }
 
-        transform.localRotation *= Quaternion.Euler(0, 0, -0.5f);
+        transform.localRotation *= Quaternion.Euler(0, 0, tumbleWeedRotationSpeed);
 
 
     }

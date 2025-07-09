@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 41faf9b4d740d624a8c51fa33f2433c3
+guid: 9c97ce088ed20f544a96bab8d619624b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5447369959397651585
-    second: Lamp on_0
+      213: 5199979006384268662
+    second: Star_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Lamp on_0
+      name: Star_0
       rect:
         serializedVersion: 2
-        x: 225
-        y: 69
-        width: 570
-        height: 885
+        x: 40
+        y: 29
+        width: 1143
+        height: 1270
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 184f70edd12f89b40800000000000000
-      internalID: 5447369959397651585
+      spriteID: 675e50b0b590a2840800000000000000
+      internalID: 5199979006384268662
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Lamp on_0: 5447369959397651585
+      Star_0: 5199979006384268662
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
