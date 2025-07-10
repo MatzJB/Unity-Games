@@ -28,7 +28,6 @@ public class WorldAnimation : MonoBehaviour
         float tt = Mathf.Abs(Mathf.Cos(t / 60 + 2.6f)) * y_max;
         float tumbleWeedRotationSpeed = -.3f + -0.6f * (1 - tt / y_max);
 
-
         var pos = transform.localPosition;
         pos.x = t;
         pos.y = y;
@@ -42,7 +41,5 @@ public class WorldAnimation : MonoBehaviour
         }
 
         transform.localRotation *= Quaternion.Euler(0, 0, tumbleWeedRotationSpeed);
-
-
     }
 }

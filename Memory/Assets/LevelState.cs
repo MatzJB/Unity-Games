@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LevelState
 {
+    //internal int cardsToMatch;
+
     [JsonProperty("stage")] public int Stage { get; set; }
     [JsonProperty("stageName")] public string StageName { get; set; }
     [JsonProperty("cardsToMatch")] public int CardsToMatch { get; set; }
@@ -12,15 +14,4 @@ public class LevelState
 
     [JsonIgnore]
     public int Columns => CardsToMatch / Rows;
-}
-
-public static class LevelDataReader
-{
-    public static List<LevelState> Load(string resourceName)
-    {
-        TextAsset json = Resources.Load<TextAsset>(resourceName);
-        return json == null
-            ? new List<LevelState>()
-            : JsonConvert.DeserializeObject<List<LevelState>>(json.text);
-    }
 }

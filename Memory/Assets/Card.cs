@@ -8,7 +8,6 @@ using UnityEngine;
 /// </summary>
 public class Card
 {
-    
     public enum State : ushort
     {
         FaceUp = 0,
@@ -61,4 +60,9 @@ public class Card
 
     public override string ToString() =>
         $"Card #{Id} [{Category}] ({CurrentState}) path=\"{Path}\"";
+
+    internal void Init(int index, GameState gameState)
+    {
+        throw new NotImplementedException();
+    }
 }

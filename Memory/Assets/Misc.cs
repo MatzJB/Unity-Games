@@ -9,7 +9,6 @@ namespace Assets
 {
     static class Misc
     {
-
         public static void NormalizeSize(this Transform t, float targetSize = 1f)
         {
             var rends = t.GetComponentsInChildren<Renderer>();
@@ -55,12 +54,35 @@ namespace Assets
             var flat = new List<T>(rows * cols);
             foreach (var v in values) flat.Add(v);
 
-            flat.Randomize();                          // uses the list version above
+            flat.Randomize();
 
             int idx = 0;
             for (int r = 0; r < rows; r++)
                 for (int c = 0; c < cols; c++)
                     values[r, c] = flat[idx++];
+        }
+
+
+        public static Bounds GetBounds(string name)
+        {
+            var go = GameObject.Find(name);
+            if (go == null)
+            {
+                Debug.LogError($"No {name}s were found");
+                return new Bounds();
+            }
+            var rends = go.GetComponentsInChildren<Renderer>();
+            if (rends.Length == 0)
+            {
+                Debug.LogError($"No Renderer on {name} or its children");
+                return new Bounds();
+            }
+
+            var bounds = rends[0].bounds;
+            for (int i = 1; i < rends.Length; i++)
+                bounds.Encapsulate(rends[i].bounds);
+
+            return bounds;
         }
     }
 }
