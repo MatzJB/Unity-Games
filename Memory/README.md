@@ -26,14 +26,24 @@ Added some animations of the background to make it more interesting.
 
 ## Obstacles along the way
 
-I am using URP at the moment with a fullscren effect. I wanted to add a simple haze effect but I realized that all opaque object are the only ones getting the effect, not the transparent objects. Only a problem with the tumble weed effect. I do not at this time know if this will affect anything in the game that I want to add later, because I might want other full screen effect (rain etc) I will probably have to bite the apple and just fix the order of the shader so it is applied AFTER transparent objects are drawn. I added a script that takes the RGB after transparency. I do not think it was necessary. I managed to realize that the material I needed was unlit/transparent cutout for the "transparent" sprites and it works. I will backtrack and see if I can remove the material script.
+* I am using URP at the moment with a fullscren effect. I wanted to add a simple haze effect but I realized that in doing this I can only use opaque material and alpha cutting.
+To avoid the FS shader to affect some parts I simply use the transparent materials on those item.
 
 
-
-Thought I could create a simple double-sided shader for turning the cards. 
+* In 2020 I thought I could create a simple double-sided shader for turning the cards. 
 I was thinking of creating a box, but settled with 2 facing sprites and letting them rotate around a pivot point.
-
 
 ![Memory cards](https://github.com/user-attachments/assets/677f7a85-971a-4b5e-971a-3eea0d492f7f)
 
-Animationclip is legacy, so I needed to find current documentation to make this work. I could have flipped the cards using code but I would rather use the engine for that.
+When I revisited the game in 2025 I realized I could create a double sided shader instead. This was necessary to creat the see-through effect and it made the scene simpler.
+
+* Animationclip is legacy, so I needed to find current documentation to make this work. I could have flipped the cards using code but I would rather use the engine for that.
+
+* When I first coded my game in 2020, I was relying on gameObjects a lot. I instantiated the cards and named them card_i_j, to pick them I parsed the name string each time.
+  I knew this was hacky and I learned that it is not necessary. In the later version I refactored the code and put a reference of the gameObject inside the *cards* in code instead.
+
+* cards were a matrix up until recently when I realized that I want to move around the cards and there were no real reason to name them anything special since I keep a reference to the gameObject. So I use a List<Cardc> instead, which is simpler.
+  
+
+  
+
