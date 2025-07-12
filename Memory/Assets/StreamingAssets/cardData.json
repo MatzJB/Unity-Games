@@ -11,18 +11,7 @@
         "category": "country flags",
         "path": "card textures/flags_1.1/ar_text.png"
     },
-    {
-        "groupIndex": 1,
-        "id": 2,
-        "category": "country flags",
-        "path": "card textures/flags_1.1/back.png"
-    },
-    {
-        "groupIndex": 2,
-        "id": 3,
-        "category": "country flags",
-        "path": "card textures/flags_1.1/back2.png"
-    },
+     
     {
         "groupIndex": 3,
         "id": 4,
