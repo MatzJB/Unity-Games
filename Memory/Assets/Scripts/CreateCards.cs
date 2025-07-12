@@ -54,25 +54,40 @@ public class CreateCards : MonoBehaviour
         int cols_ = level.Columns;
 
         GameObject cardPrefab = GameObject.Find("Card");
-        Bounds cardBounds = cardPrefab.GetComponentInChildren<Renderer>().bounds;
+        //Bounds cardBounds = cardPrefab.GetComponentInChildren<Renderer>().bounds;
 
-        float width = cardBounds.size.x;
-        float height = cardBounds.size.y;
+        //float width = cardBounds.size.x;
+        //float height = cardBounds.size.y;
 
+        float width = cardBounds.max.x - cardBounds.min.x;
+        float height = cardBounds.max.y - cardBounds.min.y;
         if (width == 0)
         {
             UnityEngine.Debug.LogError("Card width is zero. Check the prefab’s renderer.");
             return;
         }
 
-        //Vector2 origin = new(cardBounds.min.x + 0.2f * width, cardBounds.min.y);
+        Vector2 origin = new(cardBounds.min.x + 0.2f * width, cardBounds.min.y);
         //float scale = Mathf.Max(width, height) / Mathf.Max(rows + 1, cols + 1);
-        
+
+        GameObject card_entity = GameObject.Find("Cards");
+        //GameObject card_ = GameObject.Find("Card"); // for floating misaligned cards
+        //GameObject the_card = GameObject.Find("the_card"); //animation
+        //GameObject master_card = GameObject.Find("master_card");
+        GameObject canvas = GameObject.Find("Canvas");
+
+     
+      
+        //if (width == 0)
+        //    Debug.LogError("Card width is zero, check the card prefab and its renderer");
+
+
         gameState.cards = new List<CardObject>(cols_ * rows_);
 
         for (int i = 0; i < cols_ * rows_; i++)
         {
-            var go = Instantiate(cardPrefab, new Vector3(i*100, 0,0), Quaternion.identity, transform); //TODO: fix coordinates later
+            var go = Instantiate(cardPrefab, new Vector2(i % cols_, i/rows_), Quaternion.identity, transform); //TODO: fix coordinates later
+            //todo: check the positions
 
             //var card = go.GetComponent<Card>(); // get the script
             //card.Init(index, gameState); // init card
@@ -93,6 +108,11 @@ public class CreateCards : MonoBehaviour
             //var card = go.GetComponent<Card>(); // get the script?
 
         }
+
+        float scaling = Mathf.Max(width, height) / Mathf.Max(rows_ + 1, cols_ + 1);
+        card_entity.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
+
+        card_entity.transform.position = origin;
 
     }
 
