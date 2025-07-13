@@ -23,6 +23,7 @@ public class Interaction : MonoBehaviour
     
     void Update()
     {
+        // Smoothly scale the card to the target scale when hovering over the card
         transform.localScale = Vector3.Lerp(
             transform.localScale,
             targetScale,

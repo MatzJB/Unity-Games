@@ -3,6 +3,8 @@ using UnityEngine;
 using Assets;
 using Unity.Android.Gradle.Manifest;
 using System.Diagnostics;
+using static UnityEngine.Rendering.DebugUI.Table;
+using UnityEngine.UIElements;
 
 // TODO: refactor this file, move content from createCards to Interaction.cs, Card.cs,...
 // Question: what happens if I switch stage, can I do that in real time in the editor?
@@ -15,7 +17,7 @@ public class CreateCards : MonoBehaviour
     GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
 
-    [SerializeField] GameObject cardPrefab;
+    [SerializeField] GameObject card_;
     [SerializeField] GameState gameState;
 
     void Start()
@@ -52,15 +54,19 @@ public class CreateCards : MonoBehaviour
 
         int rows_ = level.Rows;
         int cols_ = level.Columns;
+        
+        GameObject cards_ = GameObject.Find("Cards");
+        GameObject card_ = GameObject.Find("Card");
 
-        GameObject cardPrefab = GameObject.Find("Card");
-        //Bounds cardBounds = cardPrefab.GetComponentInChildren<Renderer>().bounds;
+
+        //Bounds cardBounds = card_.GetComponentInChildren<Renderer>().bounds;
 
         //float width = cardBounds.size.x;
         //float height = cardBounds.size.y;
 
         float width = cardBounds.max.x - cardBounds.min.x;
         float height = cardBounds.max.y - cardBounds.min.y;
+
         if (width == 0)
         {
             UnityEngine.Debug.LogError("Card width is zero. Check the prefab’s renderer.");
@@ -70,30 +76,54 @@ public class CreateCards : MonoBehaviour
         Vector2 origin = new(cardBounds.min.x + 0.2f * width, cardBounds.min.y);
         //float scale = Mathf.Max(width, height) / Mathf.Max(rows + 1, cols + 1);
 
-        GameObject card_entity = GameObject.Find("Cards");
         //GameObject card_ = GameObject.Find("Card"); // for floating misaligned cards
         //GameObject the_card = GameObject.Find("the_card"); //animation
         //GameObject master_card = GameObject.Find("master_card");
         GameObject canvas = GameObject.Find("Canvas");
 
-     
-      
+
+
         //if (width == 0)
         //    Debug.LogError("Card width is zero, check the card prefab and its renderer");
-
+        float scaling = Mathf.Max(width, height) / Mathf.Max(rows_ + 1, cols_ + 1);
 
         gameState.cards = new List<CardObject>(cols_ * rows_);
-
         for (int i = 0; i < cols_ * rows_; i++)
         {
-            var go = Instantiate(cardPrefab, new Vector2(i % cols_, i/rows_), Quaternion.identity, transform); //TODO: fix coordinates later
-            //todo: check the positions
+            int jj = i % cols_; // column
+            int ii = i / cols_; //row
+
+
+            //var go = Instantiate(card_, new Vector2(scaling * jj, scaling * ii), Quaternion.identity, transform);
+
+
+            GameObject go = Instantiate(card_);                 // clone
+            go.transform.localScale = Vector3.one * 0.8f;            // set scale
+            go.transform.SetParent(cards_.transform, false);    // keep local values
+            //we update the position of the parent, because Interaction script will modify transform when hovering 
+        //card, the instanced object needs to have ii jj
+
+            go.transform.localPosition = new Vector3(
+                    jj,
+                    ii,
+                    0f);
+
+            go.transform.parent.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
+
+
+            //        0f);
+            //go.transform.localPosition = new Vector3(
+            //        scaling * jj,
+            //        scaling * ii,
+            //        0f);
+
 
             //var card = go.GetComponent<Card>(); // get the script
             //card.Init(index, gameState); // init card
             //gameobject and card doesn't have to be connected more than with the gameObject, the card does not communicate back to the 3d object
             //the data object "card" is created in gamestate before this...
             // get it from the decka and assign here
+            //go.transform.localScale = new Vector3(0.8f, 0.8f, 1f);
 
             Shader cardShader = Shader.Find("Shader Graphs/Card");
             int frontTexPropId = Shader.PropertyToID("_FrontTexture");
@@ -109,10 +139,10 @@ public class CreateCards : MonoBehaviour
 
         }
 
-        float scaling = Mathf.Max(width, height) / Mathf.Max(rows_ + 1, cols_ + 1);
-        card_entity.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
+        //float scaling = Mathf.Max(width, height) / Mathf.Max(rows_ + 1, cols_ + 1);
+        //cards_.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
 
-        card_entity.transform.position = origin;
+        cards_.transform.position = origin;
 
     }
 
@@ -124,7 +154,7 @@ public class CreateCards : MonoBehaviour
         // is is where my code crashed
 
         //Assets.Misc.Randomize(cards);
-        GameObject card_entity = GameObject.Find("Cards");
+        GameObject cards_ = GameObject.Find("Cards");
         GameObject card_ = GameObject.Find("Card"); // for floating misaligned cards
         GameObject the_card = GameObject.Find("the_card"); //animation
         GameObject master_card = GameObject.Find("master_card");
@@ -165,7 +195,7 @@ public class CreateCards : MonoBehaviour
         //int rows = levelData.Rows;
         //int cols = levelData.Columns / levelData.CardsToMatch;
         //float countMax = Mathf.Max(rows, cols);
-        //card_entity.transform.position = new Vector3(0, 0, 0);
+        //cards_.transform.position = new Vector3(0, 0, 0);
         //Shader cardShader = Shader.Find("Shader Graphs/Card");
         //int frontTexPropId = Shader.PropertyToID("_FrontTexture");
         //int i = 0;
@@ -174,7 +204,7 @@ public class CreateCards : MonoBehaviour
         //{
         //    GameObject cardObject = Instantiate(card_);
         //    cardObject.name = $"card";
-        //    cardObject.transform.SetParent(card_entity.transform, false);
+        //    cardObject.transform.SetParent(cards_.transform, false);
         //    // place cards in a mesh grid
         //    int j = i / levelData.Columns;
         //    cardObject.transform.localPosition = new Vector3(j, i % rows, 0);
@@ -208,9 +238,9 @@ public class CreateCards : MonoBehaviour
         //}
 
 
-        //card_entity.transform.position = cardsOrigin;
+        //cards_.transform.position = cardsOrigin;
         //float scaling = Mathf.Max(width, height) / Mathf.Max(rows + 1, levelData.Columns + 1);
-        //card_entity.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
+        //cards_.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
 
         //card_.tag = "Untagged";
 
