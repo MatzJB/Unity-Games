@@ -61,7 +61,8 @@ public class Interaction : MonoBehaviour
         {
             int index = indexComponent.index;
             Debug.Log("Card index: " + index);
-            gameState.CardClicked(index);
+            gameState.CardClicked(index);// this does work
+
         }
         
     }

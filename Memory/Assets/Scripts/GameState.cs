@@ -7,6 +7,9 @@ using UnityEngine.Analytics;
 using System.Collections;
 using NUnit.Framework;
 using System.Linq;
+using static UnityEngine.Rendering.DebugUI.Table;
+using System.Drawing;
+using JetBrains.Annotations;
 
 /*
 using System.Collections.Generic;
@@ -31,7 +34,6 @@ public class GameState
     public GameState() { }             // init already done in field initialisers
 }
 */
-
 
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
@@ -69,31 +71,47 @@ public class GameState
         //TODO: add a way to get the cards for this level based on deck and randomizer
         // create a new card for this level
 
-         //Debug.Log($"Loaded {cards.Count} cards for stage {stage}.");
+        //Debug.Log($"Loaded {cards.Count} cards for stage {stage}.");
         //StartCoroutine(FaceUpAllCards(true, 0, true));
         //StartCoroutine(FaceUpAllCards(false, 2, true));
+
+        LevelState level = levelStates[stage];
+
+        int rows_ = level.Rows;
+        int cols_ = level.Columns;
+        //cards = new List<CardObject>(cols_ * rows_);
+        cards = Enumerable.Repeat<CardObject>(null, cols_ * rows_).ToList();
+    }
+
+    public void AddCard(CardObject co, int i)
+    {
+        cards[i] = co;
     }
 
 
+    public void StartCurrentStage()
+    {
+        ShowAllCards();
+    }
+
     public void CardClicked(int cardIndex)
     {
-        if (cards[cardIndex].Data.CurrentState == Card.State.Finished)
+        // get index from cardObject not the index in "cards"
+        CardObject cardObject = (CardObject) cards.Where(x => x.Data.Index == cardIndex).First();
+        
+        if (cardObject.Data.CurrentState == Card.State.Finished)
         {
             return;
         }
 
-        cards[cardIndex].Data.SetState(Card.State.FaceUp);
-        
+        cardObject.Data.SetState(Card.State.FaceUp);
+
         // first card clicked
-        if(currentCardObject == null)
+        if (currentCardObject == null)
         {
-            currentCardObject = cards[cardIndex];
-            //go.transform.GetChild(0).GetComponent<Interaction>()
+            currentCardObject = cardObject;
             var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
-            //CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlip(1f, true));
             currentCardInteraction.FlipCard(true);
-
-
             currentCardObject.Data.SetState(Card.State.FaceUp);
             return;
         }
@@ -101,14 +119,13 @@ public class GameState
         if (previousCardObject == null)
         {
             previousCardObject = currentCardObject;
-            currentCardObject = cards[cardIndex];
+            currentCardObject = cardObject;
             currentCardObject.Data.SetState(Card.State.FaceUp);
 
             var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
             var previousCardInteraction = previousCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
 
             currentCardInteraction.FlipCard(true);
-
 
             if (currentCardObject.Data.GroupIndex == previousCardObject.Data.GroupIndex)
             {
@@ -125,14 +142,8 @@ public class GameState
                 previousCardObject.Data.SetState(Card.State.FaceDown);
                 Debug.Log("Flipping cards back!");
 
-                //CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(1));
-
                 CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 1));
                 CoroutineRunner.Instance.RunCoroutine(previousCardInteraction.DelayedFlipCard(false, 1));
-                //CoroutineRunner.Instance.RunCoroutine(previousCardInteraction.Delay(1));
-
-                //currentCardInteraction.Flip(false, 1);
-                //previousCardInteraction.Flip(false, 1);
 
                 Debug.Log("Cards do not match!");
 
@@ -141,22 +152,49 @@ public class GameState
                 return;
             }
 
-          
         }
+
+        
 
         //check how many cards are totally turned over
 
+        if(IsLevelDone())
+        {
+
+
+
+        }
 
         previousCardObject = null;
         currentCardObject = null;
     }
 
-
-    public bool isLevelDone()
+    public void Click()
     {
-        return cards.All(item => item.Data.CurrentState==Card.State.Finished);
+        Debug.Log("Click!!");
+
     }
-    
+
+
+    public void ShowAllCards()
+    {
+        foreach (CardObject card in cards)
+        {
+            var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
+            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(true, 0));
+        }
+        foreach (CardObject card in cards)
+        {
+            var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
+            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 3));
+        }
+    }
+
+    public bool IsLevelDone()
+    {
+        return cards.All(item => item.Data.CurrentState == Card.State.Finished);
+    }
+
 
     void RandomizeDeck()
     {

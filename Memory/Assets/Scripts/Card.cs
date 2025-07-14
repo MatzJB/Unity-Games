@@ -17,6 +17,9 @@ public class Card
         //Frozen = 4
     }
 
+
+    public int Index { get; set; } // for cardIndex
+
     [JsonIgnore]
     public State CurrentState { get; private set; } = State.Uninitialized;
 

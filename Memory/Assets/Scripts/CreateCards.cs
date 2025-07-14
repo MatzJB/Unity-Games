@@ -93,7 +93,6 @@ public class CreateCards : MonoBehaviour
         //    Debug.LogError("Card width is zero, check the card prefab and its renderer");
         float scaling = Mathf.Max(width, height) / Mathf.Max(rows_ + 1, cols_ + 1);
 
-        gameState.cards = new List<CardObject>(cols_ * rows_);
         for (int i = 0; i < cols_ * rows_; i++)
         {
             int jj = i % cols_; // column
@@ -104,11 +103,9 @@ public class CreateCards : MonoBehaviour
             ci.index = i;
             //var currentCardInteraction = go.View.GetComponent<Interaction>();
 
-
             var currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
             currentCardInteraction.Init(gameState);
             UnityEngine.Debug.Log($" cardindex added {i}");
-
             
             // important because Interaction is in the parent, and we want these two to be close by
             //go..AddComponent<CardIndex>().index = i;
@@ -116,21 +113,19 @@ public class CreateCards : MonoBehaviour
             go.transform.SetParent(cards_.transform, false);
             //be careful because Interaction.cs scales back to 1 because of hovering effect... maybe there is a better way?
 
-
             go.transform.localPosition = new Vector3(
                     jj,
                     ii,
                     0f);
 
-            go.transform.parent.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
-
+            go.transform.parent.transform.localScale = new Vector3(scaling, scaling, scaling);
+            //z scaling must be scaling otherwise it will be flat
 
             //        0f);
             //go.transform.localPosition = new Vector3(
             //        scaling * jj,
             //        scaling * ii,
             //        0f);
-
 
             //var card = go.GetComponent<Card>(); // get the script
             //card.Init(index, gameState); // init card
@@ -147,8 +142,10 @@ public class CreateCards : MonoBehaviour
             var mpb = new MaterialPropertyBlock();
             mpb.SetTexture(frontTexPropId, tex);
             rend.SetPropertyBlock(mpb);
-
-            gameState.cards.Add(new CardObject(gameState.deck[i], go));
+            CardObject tmp = new CardObject(gameState.deck[i], go);
+            tmp.Data.Index = i;
+            // add cards using index because otherwise we cannot randomize them
+            gameState.AddCard(tmp, i);
             //var card = go.GetComponent<Card>(); // get the script?
 
         }
@@ -157,18 +154,13 @@ public class CreateCards : MonoBehaviour
         //cards_.transform.localScale = new Vector3(scaling, scaling, scaling);//z scaling must be scaling otherwise it will be flat
 
         cards_.transform.position = origin;
-
-
-        Misc.Randomize(cards_);
-
-
+        Misc.Randomize(gameState.cards);
     }
 
     // Find the board and places cards randomly
     public void InitCards() // load level
     {
         LevelState levelData = gameState.levelStates[gameState.stage]; 
-        // is is where my code crashed
 
         //Assets.Misc.Randomize(cards);
         GameObject cards_ = GameObject.Find("Cards");
@@ -179,6 +171,7 @@ public class CreateCards : MonoBehaviour
         //GameObject background = GameObject.Find("Background");
 
         BuildBoard();
+        gameState.StartCurrentStage();
 
         //var cardDimensions = master_card.GetComponent<Renderer>().bounds.size;
 
