@@ -218,7 +218,6 @@ GameObject:
   - component: {fileID: 304171396}
   - component: {fileID: 304171395}
   - component: {fileID: 304171394}
-  - component: {fileID: 304171393}
   m_Layer: 0
   m_Name: master_card
   m_TagString: Untagged
@@ -226,28 +225,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!64 &304171393
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304171392}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &304171394
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -416,7 +393,6 @@ GameObject:
   - component: {fileID: 593079772}
   - component: {fileID: 593079774}
   - component: {fileID: 593079775}
-  - component: {fileID: 593079776}
   m_Layer: 0
   m_Name: the_card
   m_TagString: Untagged
@@ -494,27 +470,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverScaleFactor: 1.2
   smoothSpeed: 10
---- !u!65 &593079776
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 593079771}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &619332506
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +717,6 @@ GameObject:
   m_Component:
   - component: {fileID: 794649305}
   - component: {fileID: 794649306}
-  - component: {fileID: 794649307}
   m_Layer: 0
   m_Name: Card
   m_TagString: Untagged
@@ -803,20 +757,6 @@ Animation:
   m_AnimatePhysics: 0
   m_UpdateMode: 0
   m_CullingType: 0
---- !u!114 &794649307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 794649304}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13c6e67e931c1b24ab2aa4597eb68c66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverScaleFactor: 1.2
-  smoothSpeed: 10
 --- !u!1 &847016187
 GameObject:
   m_ObjectHideFlags: 0
@@ -1932,7 +1872,6 @@ GameObject:
   - component: {fileID: 1612330105}
   - component: {fileID: 1612330106}
   - component: {fileID: 1612330107}
-  - component: {fileID: 1612330108}
   m_Layer: 0
   m_Name: Cards
   m_TagString: Untagged
@@ -1967,7 +1906,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdefa26ce82c80449b7ec2338f9b8ca5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPrefab: {fileID: 0}
+  card_: {fileID: 0}
 --- !u!23 &1612330106
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2020,7 +1959,7 @@ Tilemap:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1612330103}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Tiles: {}
   m_AnimatedTiles: {}
   m_TileAssetArray: []
@@ -2051,20 +1990,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!114 &1612330108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1612330103}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13c6e67e931c1b24ab2aa4597eb68c66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hoverScaleFactor: 1.2
-  smoothSpeed: 10
 --- !u!1 &1737325144
 GameObject:
   m_ObjectHideFlags: 0

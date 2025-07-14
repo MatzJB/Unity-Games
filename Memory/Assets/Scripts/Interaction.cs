@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
-
+using UnityEngine.Analytics;
 /*
  Responsible for interactions with the cards. Each card has this script attached to it.
  */
@@ -12,8 +12,7 @@ public class Interaction : MonoBehaviour
     public float hoverScaleFactor = 1.2f;
     public float smoothSpeed = 10f;
     private Vector3 targetScale;
-    GameState gs;
-
+    public GameState gameState;
 
     void Start()
     {
@@ -44,14 +43,46 @@ public class Interaction : MonoBehaviour
 
     }
 
-    public void Init(GameState manager)
+    public void Init(GameState gs)
     {
-        gs = manager;
+        UnityEngine.Debug.Log($" Interaction initialized gameState! {this.GetHashCode()}");
+
+        gameState = gs;
     }
+
 
     void OnMouseDown()
     {
-        gs.CardClicked(this);   // send the whole card object
+        Debug.Log("Clicked object: " + gameObject.name);
+
+        //for some reason gameState is null here, despite init running for each card... how is that possible?
+        CardIndex indexComponent = this.GetComponentInParent<CardIndex>();
+        if (indexComponent != null)
+        {
+            int index = indexComponent.index;
+            Debug.Log("Card index: " + index);
+            gameState.CardClicked(index);
+        }
+        
+    }
+
+    public void FlipCard(bool faceUp)
+    {
+        Animation anim = this.GetComponentInChildren<Animation>(true);
+        if (anim != null)
+            anim.Play(faceUp ? "Flip" : "FlipBack");
+
+    }
+
+    public IEnumerator Delay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+    }
+
+    public IEnumerator DelayedFlipCard(bool faceUp, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        FlipCard(faceUp);
     }
 
 
@@ -61,5 +92,6 @@ public class Interaction : MonoBehaviour
         targetScale = defaultScale;
     }
 
+  
 }
 

@@ -5,6 +5,12 @@ using Unity.Android.Gradle.Manifest;
 using System.Diagnostics;
 using static UnityEngine.Rendering.DebugUI.Table;
 using UnityEngine.UIElements;
+using System.Collections;
+using System;
+using NUnit.Framework;
+using static Assets.Misc;
+using System;
+using System.Collections.Generic;
 
 // TODO: refactor this file, move content from createCards to Interaction.cs, Card.cs,...
 // Question: what happens if I switch stage, can I do that in real time in the editor?
@@ -17,8 +23,8 @@ public class CreateCards : MonoBehaviour
     GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
 
-    [SerializeField] GameObject card_;
-    [SerializeField] GameState gameState;
+    //GameObject card_;
+    public GameState gameState;
 
     void Start()
     {
@@ -93,15 +99,23 @@ public class CreateCards : MonoBehaviour
             int jj = i % cols_; // column
             int ii = i / cols_; //row
 
+            GameObject go = Instantiate(card_);
+            CardIndex ci = go.AddComponent<CardIndex>();
+            ci.index = i;
+            //var currentCardInteraction = go.View.GetComponent<Interaction>();
 
-            //var go = Instantiate(card_, new Vector2(scaling * jj, scaling * ii), Quaternion.identity, transform);
 
+            var currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
+            currentCardInteraction.Init(gameState);
+            UnityEngine.Debug.Log($" cardindex added {i}");
 
-            GameObject go = Instantiate(card_);                 // clone
-            go.transform.localScale = Vector3.one * 0.8f;            // set scale
-            go.transform.SetParent(cards_.transform, false);    // keep local values
-            //we update the position of the parent, because Interaction script will modify transform when hovering 
-        //card, the instanced object needs to have ii jj
+            
+            // important because Interaction is in the parent, and we want these two to be close by
+            //go..AddComponent<CardIndex>().index = i;
+            go.transform.localScale = Vector3.one * 0.8f;
+            go.transform.SetParent(cards_.transform, false);
+            //be careful because Interaction.cs scales back to 1 because of hovering effect... maybe there is a better way?
+
 
             go.transform.localPosition = new Vector3(
                     jj,
@@ -144,12 +158,15 @@ public class CreateCards : MonoBehaviour
 
         cards_.transform.position = origin;
 
+
+        Misc.Randomize(cards_);
+
+
     }
 
     // Find the board and places cards randomly
     public void InitCards() // load level
     {
-        
         LevelState levelData = gameState.levelStates[gameState.stage]; 
         // is is where my code crashed
 
@@ -268,13 +285,7 @@ public class CreateCards : MonoBehaviour
     //    return new Vector2(i, j);
     //}
 
-    // check if all turned up should be turned over back
-    private bool CheckIfTurnIsOver()
-    {
-        //if 4 cards are turned over => turn all cards that are not dead over
-        return false;
-    }
-
+  
 
 
     //private IEnumerator FaceUpAllCards(bool faceUp, int time, bool doesNotMatterWhatState)
@@ -313,43 +324,43 @@ public class CreateCards : MonoBehaviour
     //numberOfTurns = 0;
     //}
 
-//// sets each card to face down 
-//private void ResetCardStates()
-//{
-//    for (int i = 0; i < numberOfRows; i++)
-//    {
-//        for (int j = 0; j < numberOfColumns; j++)
-//        {
-//            cards[i, j].SetState(Card.State.FaceDown);
-//        }
-//    }
-//}
+    //// sets each card to face down 
+    //private void ResetCardStates()
+    //{
+    //    for (int i = 0; i < numberOfRows; i++)
+    //    {
+    //        for (int j = 0; j < numberOfColumns; j++)
+    //        {
+    //            cards[i, j].SetState(Card.State.FaceDown);
+    //        }
+    //    }
+    //}
 
-//private bool GameOver()
-//{
-//    int numberOfFinishedCards = 0;
-//    for (int i = 0; i < numberOfRows; i++)
-//    {
-//        for (int j = 0; j < numberOfColumns; j++)
-//        {
-//            Card.State s = cards[i, j].GetState();
+    //private bool GameOver()
+    //{
+    //    int numberOfFinishedCards = 0;
+    //    for (int i = 0; i < numberOfRows; i++)
+    //    {
+    //        for (int j = 0; j < numberOfColumns; j++)
+    //        {
+    //            Card.State s = cards[i, j].GetState();
 
-//            if (s == Card.State.Finished)
-//            {
-//                numberOfFinishedCards++;
-//            }
-//            else
-//                return false;
-//        }
-//    }
+    //            if (s == Card.State.Finished)
+    //            {
+    //                numberOfFinishedCards++;
+    //            }
+    //            else
+    //                return false;
+    //        }
+    //    }
 
-//    bool gameIsOver = numberOfColumns * numberOfRows == numberOfFinishedCards;
-//    return gameIsOver;
-//}
+    //    bool gameIsOver = numberOfColumns * numberOfRows == numberOfFinishedCards;
+    //    return gameIsOver;
+    //}
 
 
-// Update is called once per frame
-void Update()
+    // Update is called once per frame
+    void Update()
 {
 
 //    //update gameObect in scene:

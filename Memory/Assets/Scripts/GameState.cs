@@ -4,7 +4,9 @@ using System.IO;
 using UnityEngine;
 using static CreateCards;
 using UnityEngine.Analytics;
-
+using System.Collections;
+using NUnit.Framework;
+using System.Linq;
 
 /*
 using System.Collections.Generic;
@@ -36,18 +38,19 @@ public class GameState
 // add state for menu, pause, running and end, replay
 public class GameState
 {
-    public int stage = -1; // current stage
+    public int stage = -1; // current stage, reference levelState
     public int numberOfTurns; // 0, 1 or 2
 
     [Header("Level & asset files")]
     [SerializeField] string levelDataFile = "levelData.json";
     [SerializeField] string cardJsonFile = "cardData.json";
 
-    Card currentCard;
-    Card previousCard;
+    // We use cardobject so we can access the card data and the gameobject at the same time for bookkeeping (gameState) but also animation (gameObject)
+    CardObject currentCardObject;
+    CardObject previousCardObject;
 
-    public List<CardObject> cards; // cards used for current level with gameobjects attached to each card
     public List<Card> deck; // all cards from all levels, loaded once
+    public List<CardObject> cards; // cards used for current level with gameobjects attached to each card
     public List<LevelState> levelStates;
     //TODO: this is a gameObject property, can I add this to the card list as a property?
 
@@ -72,50 +75,88 @@ public class GameState
     }
 
 
-    // should be here?
-    public void CardClicked(Interaction card)
+    public void CardClicked(int cardIndex)
     {
-        if (currentCard == null)
+        if (cards[cardIndex].Data.CurrentState == Card.State.Finished)
         {
-            currentCard = card.GetComponent<Card>();
-            currentCard.SetState(Card.State.FaceUp);
+            return;
         }
-        else if (previousCard == null)
+
+        cards[cardIndex].Data.SetState(Card.State.FaceUp);
+        
+        // first card clicked
+        if(currentCardObject == null)
         {
-            previousCard = currentCard;
-            currentCard = card.GetComponent<Card>();
-            currentCard.SetState(Card.State.FaceUp);
-            // check if the two cards match
-            if (currentCard.GroupIndex == previousCard.GroupIndex)
+            currentCardObject = cards[cardIndex];
+            //go.transform.GetChild(0).GetComponent<Interaction>()
+            var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
+            //CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlip(1f, true));
+            currentCardInteraction.FlipCard(true);
+
+
+            currentCardObject.Data.SetState(Card.State.FaceUp);
+            return;
+        }
+        // second card clicked
+        if (previousCardObject == null)
+        {
+            previousCardObject = currentCardObject;
+            currentCardObject = cards[cardIndex];
+            currentCardObject.Data.SetState(Card.State.FaceUp);
+
+            var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
+            var previousCardInteraction = previousCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
+
+            currentCardInteraction.FlipCard(true);
+
+
+            if (currentCardObject.Data.GroupIndex == previousCardObject.Data.GroupIndex)
             {
                 // do something, like remove the cards or mark them as matched
                 Debug.Log("Cards match!");
-                previousCard.SetState(Card.State.Finished);
-                currentCard.SetState(Card.State.Finished);
-                previousCard = null; // reset previous card
+                previousCardObject.Data.SetState(Card.State.Finished);
+                currentCardObject.Data.SetState(Card.State.Finished);
+                previousCardObject = null; // reset previous card
             }
             else
             {
-                // do something, like flip them back after a delay
+                // flip these cards back down
+                currentCardObject.Data.SetState(Card.State.FaceDown);
+                previousCardObject.Data.SetState(Card.State.FaceDown);
+                Debug.Log("Flipping cards back!");
+
+                //CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(1));
+
+                CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 1));
+                CoroutineRunner.Instance.RunCoroutine(previousCardInteraction.DelayedFlipCard(false, 1));
+                //CoroutineRunner.Instance.RunCoroutine(previousCardInteraction.Delay(1));
+
+                //currentCardInteraction.Flip(false, 1);
+                //previousCardInteraction.Flip(false, 1);
 
                 Debug.Log("Cards do not match!");
-                //TODO: fix this, needs to flip up
-                //StartCoroutine(FaceUpAllCards(false, 2, true));
 
-
-
-                previousCard = null; // reset previous card
+                previousCardObject = null;
+                currentCardObject = null;
+                return;
             }
+
+          
         }
 
+        //check how many cards are totally turned over
+
+
+        previousCardObject = null;
+        currentCardObject = null;
     }
 
-    public void FlipAll()
+
+    public bool isLevelDone()
     {
-        foreach (var card in cards) card.Data.SetState(Card.State.FaceUp);
+        return cards.All(item => item.Data.CurrentState==Card.State.Finished);
     }
-
-
+    
 
     void RandomizeDeck()
     {

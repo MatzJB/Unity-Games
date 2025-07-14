@@ -34,32 +34,15 @@ namespace Assets
             t.localScale = t.localScale * scaleFactor;
         }
 
-
-        public static void Randomize<T>(this IList<T> list)
+        // Fisher-Yates
+        public static void Randomize<T>(this IList<T> list, System.Random rng = null)
         {
-            var rand = new System.Random();
+            rng ??= new System.Random();
             for (int i = list.Count - 1; i > 0; i--)
             {
-                int j = rand.Next(i + 1);
+                int j = rng.Next(i + 1);
                 (list[i], list[j]) = (list[j], list[i]);
             }
-        }
-
-        // keep matrix overload if you still want it
-        public static void Randomize<T>(this T[,] values)
-        {
-            int rows = values.GetLength(0);
-            int cols = values.GetLength(1);
-
-            var flat = new List<T>(rows * cols);
-            foreach (var v in values) flat.Add(v);
-
-            flat.Randomize();
-
-            int idx = 0;
-            for (int r = 0; r < rows; r++)
-                for (int c = 0; c < cols; c++)
-                    values[r, c] = flat[idx++];
         }
 
 
