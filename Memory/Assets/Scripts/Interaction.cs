@@ -87,12 +87,10 @@ public class Interaction : MonoBehaviour
     }
 
 
-
     void OnMouseExit()
     {
         targetScale = defaultScale;
     }
-
   
 }
 

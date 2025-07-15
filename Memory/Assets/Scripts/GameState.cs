@@ -1,39 +1,9 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.IO;
-using UnityEngine;
-using static CreateCards;
-using UnityEngine.Analytics;
-using System.Collections;
-using NUnit.Framework;
 using System.Linq;
-using static UnityEngine.Rendering.DebugUI.Table;
-using System.Drawing;
-using JetBrains.Annotations;
+using Newtonsoft.Json;
+using UnityEngine;
 
-/*
-using System.Collections.Generic;
-
-[System.Serializable]           // lets Unity serialize it if you expose it
-public class GameState
-{
-    public List<LevelState> levels = new();
-    public int stage = -1;
-    public int numberOfTurns = 0;
-
-    public string levelDataFile = "levelData.json";
-    public string cardJsonFile = "cardData.json";
-
-    public Card currentCard;
-    public Card previousCard;
-
-    public List<CardObject> cards = new();
-    public List<Card> deck = new();
-    public List<LevelState> levelStates = new();
-
-    public GameState() { }             // init already done in field initialisers
-}
-*/
 
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
@@ -54,12 +24,10 @@ public class GameState
     public List<Card> deck; // all cards from all levels, loaded once
     public List<CardObject> cards; // cards used for current level with gameobjects attached to each card
     public List<LevelState> levelStates;
-    //TODO: this is a gameObject property, can I add this to the card list as a property?
 
 
     public GameState()
     {
-        // loading level data
         stage = 0;
 
         //TODO: add a high scores JSON?
@@ -68,18 +36,11 @@ public class GameState
 
         deck = JsonConvert.DeserializeObject<List<Card>>(cardDataFilename);
         levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
-        //TODO: add a way to get the cards for this level based on deck and randomizer
-        // create a new card for this level
-
-        //Debug.Log($"Loaded {cards.Count} cards for stage {stage}.");
-        //StartCoroutine(FaceUpAllCards(true, 0, true));
-        //StartCoroutine(FaceUpAllCards(false, 2, true));
-
+      
         LevelState level = levelStates[stage];
 
         int rows_ = level.Rows;
         int cols_ = level.Columns;
-        //cards = new List<CardObject>(cols_ * rows_);
         cards = Enumerable.Repeat<CardObject>(null, cols_ * rows_).ToList();
     }
 
@@ -140,12 +101,9 @@ public class GameState
                 // flip these cards back down
                 currentCardObject.Data.SetState(Card.State.FaceDown);
                 previousCardObject.Data.SetState(Card.State.FaceDown);
-                Debug.Log("Flipping cards back!");
 
                 CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 1));
                 CoroutineRunner.Instance.RunCoroutine(previousCardInteraction.DelayedFlipCard(false, 1));
-
-                Debug.Log("Cards do not match!");
 
                 previousCardObject = null;
                 currentCardObject = null;
@@ -160,8 +118,7 @@ public class GameState
 
         if(IsLevelDone())
         {
-
-
+            // Show stats and then change to new level
 
         }
 
@@ -193,13 +150,6 @@ public class GameState
     public bool IsLevelDone()
     {
         return cards.All(item => item.Data.CurrentState == Card.State.Finished);
-    }
-
-
-    void RandomizeDeck()
-    {
-        Assets.Misc.Randomize(cards);
-
     }
 
 
