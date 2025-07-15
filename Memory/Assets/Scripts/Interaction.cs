@@ -14,12 +14,18 @@ public class Interaction : MonoBehaviour
     private Vector3 targetScale;
     public GameState gameState;
 
+
+    private Material _bulbMat;
+    //bonuses and penalties are here:
+    GameObject bulb;
+    Renderer bulbRenderer;
+
     void Start()
     {
         defaultScale = transform.localScale;
         targetScale = defaultScale;
     }
-    
+
     void Update()
     {
         // Smoothly scale the card to the target scale when hovering over the card
@@ -46,7 +52,6 @@ public class Interaction : MonoBehaviour
     public void Init(GameState gs)
     {
         UnityEngine.Debug.Log($" Interaction initialized gameState! {this.GetHashCode()}");
-
         gameState = gs;
     }
 
@@ -62,9 +67,7 @@ public class Interaction : MonoBehaviour
             int index = indexComponent.index;
             Debug.Log("Card index: " + index);
             gameState.CardClicked(index);// this does work
-
         }
-        
     }
 
     public void FlipCard(bool faceUp)
@@ -72,7 +75,6 @@ public class Interaction : MonoBehaviour
         Animation anim = this.GetComponentInChildren<Animation>(true);
         if (anim != null)
             anim.Play(faceUp ? "Flip" : "FlipBack");
-
     }
 
     public IEnumerator Delay(float delay)
@@ -86,11 +88,18 @@ public class Interaction : MonoBehaviour
         FlipCard(faceUp);
     }
 
+    // spin cards that are not done
+    public void SpinCards()
+    {
+
+    }
+
 
     void OnMouseExit()
     {
         targetScale = defaultScale;
     }
-  
+
 }
+
 

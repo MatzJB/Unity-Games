@@ -24,7 +24,7 @@ public class GameState
     public List<Card> deck; // all cards from all levels, loaded once
     public List<CardObject> cards; // cards used for current level with gameobjects attached to each card
     public List<LevelState> levelStates;
-
+    private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
 
     public GameState()
     {
@@ -42,6 +42,7 @@ public class GameState
         int rows_ = level.Rows;
         int cols_ = level.Columns;
         cards = Enumerable.Repeat<CardObject>(null, cols_ * rows_).ToList();
+        matchHistory = new List<bool>();
     }
 
     public void AddCard(CardObject co, int i)
@@ -60,6 +61,7 @@ public class GameState
         // get index from cardObject not the index in "cards"
         CardObject cardObject = (CardObject) cards.Where(x => x.Data.Index == cardIndex).First();
         
+        //TODO: dont' allow a flip until the animation is finished
         if (cardObject.Data.CurrentState == Card.State.Finished)
         {
             return;
@@ -74,6 +76,7 @@ public class GameState
             var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
             currentCardInteraction.FlipCard(true);
             currentCardObject.Data.SetState(Card.State.FaceUp);
+            
             return;
         }
         // second card clicked
@@ -95,6 +98,7 @@ public class GameState
                 previousCardObject.Data.SetState(Card.State.Finished);
                 currentCardObject.Data.SetState(Card.State.Finished);
                 previousCardObject = null; // reset previous card
+                matchHistory.Add(true);                
             }
             else
             {
@@ -107,16 +111,29 @@ public class GameState
 
                 previousCardObject = null;
                 currentCardObject = null;
-                return;
-            }
+                matchHistory.Add(false);
 
+                
+            }
+            //check for bonus or penalty
+            //if the two last matchings are true, then give the lamp bonus
+            if (LastTwoAreTrue(matchHistory))
+            {
+                GameObject cardsGO = GameObject.Find("Cards");
+                CreateCards _cards = cardsGO.GetComponent<CreateCards>();
+                _cards.TriggerLamp();
+
+
+            }
+            
         }
 
-        
+
+
 
         //check how many cards are totally turned over
 
-        if(IsLevelDone())
+        if (IsLevelDone())
         {
             // Show stats and then change to new level
 
@@ -132,6 +149,12 @@ public class GameState
 
     }
 
+    bool LastTwoAreTrue(IList<bool>? list)
+    {
+        return list != null &&
+               list.Count >= 2 &&
+               list.TakeLast(2).All(v => v);
+    }
 
     public void ShowAllCards()
     {

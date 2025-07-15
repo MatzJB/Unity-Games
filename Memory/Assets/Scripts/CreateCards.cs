@@ -1,5 +1,7 @@
 ﻿using Assets;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 // TODO: refactor this file, move content from createCards to Interaction.cs, Card.cs,...
 // Question: what happens if I switch stage, can I do that in real time in the editor?
@@ -7,12 +9,15 @@ using UnityEngine;
 public class CreateCards : MonoBehaviour
 {
     float startTime;
-    GameObject bulb;
-    Renderer bulbRenderer;
+
     GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
-
+    GameObject lightBulb;
     public GameState gameState;
+    GameObject master_card;
+    private static readonly int OnID = Shader.PropertyToID("_on");
+    private static readonly int LitID = Shader.PropertyToID("_lit");
+
 
     void Start()
     {
@@ -23,19 +28,17 @@ public class CreateCards : MonoBehaviour
 
         cloud = GameObject.Find("Cloud");
         cardBounds = Misc.GetBounds("Cloud");
+        lightBulb = GameObject.Find("Light bulb");
+        master_card = GameObject.Find("master_card");
+
 
         InitCards();
         startTime = Time.realtimeSinceStartup;
-
-        bulb = GameObject.Find("Light bulb");
-        if (bulb == null) { UnityEngine.Debug.LogError("Light bulb not found"); return; }
-        bulbRenderer = bulb.GetComponent<Renderer>();
     }
 
 
     public void Awake()
     {
-      
 
     }
 
@@ -48,9 +51,10 @@ public class CreateCards : MonoBehaviour
 
         int rows_ = level.Rows;
         int cols_ = level.Columns;
-        
+
         GameObject cards_ = GameObject.Find("Cards");
         GameObject card_ = GameObject.Find("Card");
+
 
         float width = cardBounds.max.x - cardBounds.min.x;
         float height = cardBounds.max.y - cardBounds.min.y;
@@ -78,7 +82,7 @@ public class CreateCards : MonoBehaviour
             var currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
             currentCardInteraction.Init(gameState);
             UnityEngine.Debug.Log($" cardindex added {i}");
-            
+
             // important because Interaction is in the parent, and we want these two to be close by
             //go..AddComponent<CardIndex>().index = i;
             go.transform.localScale = Vector3.one * 0.8f;
@@ -105,7 +109,7 @@ public class CreateCards : MonoBehaviour
             // add cards using index because otherwise we cannot randomize them
             gameState.AddCard(tmp, i);
         }
-       
+
         cards_.transform.position = origin;
         Misc.Randomize(gameState.cards);
     }
@@ -119,6 +123,56 @@ public class CreateCards : MonoBehaviour
         gameState.StartCurrentStage();
     }
     // Update is called once per frame
+
+
+    public void TriggerLamp()
+    {
+        StartCoroutine(FlickerThenFade());
+    }
+
+    //would be nicer if this function is located in another persistant class so we dont have to fetch the bulb every time
+    private IEnumerator FlickerThenFade()
+    {
+        Material _bulbMat = lightBulb.GetComponent<Renderer>().material;
+
+        Renderer card_rend = master_card.GetComponentInChildren<Renderer>();
+        Material card_mat = card_rend.material;
+        int OnID = Shader.PropertyToID("_on"); //bulb
+        int LitID = Shader.PropertyToID("_lit"); //card
+
+        float elapsed = 0f;
+
+        while (elapsed < 3f)
+        {
+            float onOff = UnityEngine.Random.value < 0.5f ? 1f : 0f;
+            _bulbMat.SetFloat(OnID, onOff);
+            card_mat.SetFloat(LitID, onOff);
+            float wait = UnityEngine.Random.Range(0.05f, 0.15f);
+            //Renderer rend = this.GetComponentInChildren<Renderer>();
+            //Material mat = rend.material;
+
+            yield return new WaitForSeconds(wait);
+            elapsed += wait;
+        }
+
+        _bulbMat.SetFloat(OnID, 1f);
+        card_mat.SetFloat(LitID, 1f);
+
+        for (float t = 0f; t < 1f; t += Time.deltaTime)
+        {
+            float v = Mathf.Lerp(1f, 0f, t);
+            _bulbMat.SetFloat(OnID, v);
+            card_mat.SetFloat(LitID, v);
+
+            yield return null;
+        }
+
+        _bulbMat.SetFloat(OnID, 0f);
+        card_mat.SetFloat(LitID, 0f);
+    }
+
+
+
     void Update()
     {
 
@@ -158,8 +212,6 @@ public class CreateCards : MonoBehaviour
         //    0,
         //    angle
         //);
-
-
     }
 }
 
