@@ -1,5 +1,6 @@
 ﻿using Assets;
 using System.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Analytics;
 
@@ -9,14 +10,16 @@ using UnityEngine.Analytics;
 public class CreateCards : MonoBehaviour
 {
     float startTime;
-
     GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
     GameObject lightBulb;
     public GameState gameState;
-    GameObject master_card;
-    private static readonly int OnID = Shader.PropertyToID("_on");
-    private static readonly int LitID = Shader.PropertyToID("_lit");
+    GameObject cards__;
+    //private int OnID = Shader.PropertyToID("_on");
+    //private int LitID = Shader.PropertyToID("_lit");
+    int OnID = Shader.PropertyToID("_on"); //bulb
+    int LitID = Shader.PropertyToID("_lit"); //card
+    int BulbTransparencyID = Shader.PropertyToID("_transparency");
 
 
     void Start()
@@ -29,10 +32,10 @@ public class CreateCards : MonoBehaviour
         cloud = GameObject.Find("Cloud");
         cardBounds = Misc.GetBounds("Cloud");
         lightBulb = GameObject.Find("Light bulb");
-        master_card = GameObject.Find("master_card");
-
 
         InitCards();
+        cards__ = GameObject.Find("master_card"); //master_card or Cards
+
         startTime = Time.realtimeSinceStartup;
     }
 
@@ -103,6 +106,8 @@ public class CreateCards : MonoBehaviour
             Renderer rend = go.GetComponentInChildren<Renderer>(); // the one that’s already there
             var mpb = new MaterialPropertyBlock();
             mpb.SetTexture(frontTexPropId, tex);
+            mpb.SetFloat(BulbTransparencyID, 0f);
+            mpb.SetFloat(LitID, 0f);
             rend.SetPropertyBlock(mpb);
             CardObject tmp = new CardObject(gameState.deck[i], go);
             tmp.Data.Index = i;
@@ -131,87 +136,158 @@ public class CreateCards : MonoBehaviour
     }
 
     //would be nicer if this function is located in another persistant class so we dont have to fetch the bulb every time
+    //TODO: new to fix
     private IEnumerator FlickerThenFade()
     {
         Material _bulbMat = lightBulb.GetComponent<Renderer>().material;
-
-        Renderer card_rend = master_card.GetComponentInChildren<Renderer>();
-        Material card_mat = card_rend.material;
-        int OnID = Shader.PropertyToID("_on"); //bulb
-        int LitID = Shader.PropertyToID("_lit"); //card
-
+        Material card_mat = cards__.GetComponent<Renderer>().material;
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         float elapsed = 0f;
+        Vector3 lightBulbPosition = lightBulb.transform.localPosition;
 
-        while (elapsed < 3f)
-        {
-            float onOff = UnityEngine.Random.value < 0.5f ? 1f : 0f;
-            _bulbMat.SetFloat(OnID, onOff);
-            card_mat.SetFloat(LitID, onOff);
-            float wait = UnityEngine.Random.Range(0.05f, 0.15f);
-            //Renderer rend = this.GetComponentInChildren<Renderer>();
-            //Material mat = rend.material;
 
-            yield return new WaitForSeconds(wait);
-            elapsed += wait;
-        }
-
-        _bulbMat.SetFloat(OnID, 1f);
-        card_mat.SetFloat(LitID, 1f);
 
         for (float t = 0f; t < 1f; t += Time.deltaTime)
         {
-            float v = Mathf.Lerp(1f, 0f, t);
-            _bulbMat.SetFloat(OnID, v);
-            card_mat.SetFloat(LitID, v);
+            float v = Mathf.Lerp(0f, 1f, t);
 
-            yield return null;
+            mpb = lightBulb.GetComponentInChildren<Renderer>().GetPropertyBlock(mpb);
+            _bulbMat.SetFloat(BulbTransparencyID, v);
+            lightBulb.transform.position = lightBulb.transform.position + new Vector3(0, 0.5f, 0);
         }
 
-        _bulbMat.SetFloat(OnID, 0f);
-        card_mat.SetFloat(LitID, 0f);
-    }
+        //TODO: check that the cards are updated properly
+        while (elapsed < 3f)
+        {
+            float onOff = UnityEngine.Random.value < 0.5f ? 1f : 0f;
+
+            foreach (var cardObj in gameState.cards)
+            {
+                Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
+                rend.GetPropertyBlock(mpb);
+
+                mpb.SetFloat(LitID, onOff * 0.046f);
+                rend.SetPropertyBlock(mpb);
+
+            }
+
+            _bulbMat.SetFloat(OnID, onOff);
+            float wait = UnityEngine.Random.Range(0.05f, 0.15f);
+
+            yield return new WaitForSeconds(wait);
+            elapsed += wait;
+
+            _bulbMat.SetFloat(OnID, 0f);
+
+            foreach (var cardObj in gameState.cards)
+            {
+                Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
+                rend.GetPropertyBlock(mpb);
+
+                mpb.SetFloat(LitID, 0f);
+                rend.SetPropertyBlock(mpb);
+
+            }
 
 
 
-    void Update()
-    {
 
-        //    //update gameObect in scene:
-        //    //update the position of each card each frame, to have them floating
-        //    float elapsedSeconds = Time.realtimeSinceStartup - startTime;
-        //    float y = Mathf.Cos(elapsedSeconds / 60) * 30;
-        //    float elapsedMs = elapsedSeconds * 1000f;
+            ////card_mat.SetFloat(LitID, 1f);
+            //foreach (var cardObj in gameState.cards)
+            //{
+            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
+            //    rend.GetPropertyBlock(mpb);
 
-        //    var cardObject = GameObject.FindGameObjectsWithTag("Card");
+            //    mpb.SetFloat(LitID, 1f);
+            //    rend.SetPropertyBlock(mpb);
 
-        //    foreach (var card in cardObject)
-        //    {
-        //        // find parent, and get card_i_j
-        //        Vector2 vv = GetCardFromGameObject(card.name);
+            //    _bulbMat.SetFloat(OnID, onOff);
+            //}
+            ////new
+            //foreach (var cardObj in gameState.cards)
+            //{
+            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
+            //    rend.GetPropertyBlock(mpb);
 
-        //        card.transform.position = new Vector3(
-        //            card.transform.position.x,
-        //           card.transform.position.y + 0.02f * Mathf.Cos(elapsedSeconds + vv.x % 5 + vv.y),
-        //            //make this value relative to the card height
-        //            card.transform.position.z
-        //        );
+            //    for (float t = 0f; t < 1f; t += Time.deltaTime)
+            //    {
+            //        float v = Mathf.Lerp(1f, 0f, t);
+            //        _bulbMat.SetFloat(OnID, v);
+            //        mpb.SetFloat(LitID, v);
+            //        rend.SetPropertyBlock(mpb);
+
+            //        yield return null;
+            //    }
+            //}
+
+            //foreach (var cardObj in gameState.cards)
+            //{
+            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
+            //    rend.GetPropertyBlock(mpb);
+            //    for (float t = 0f; t < 1f; t += Time.deltaTime)
+            //    {
+            //        float v = Mathf.Lerp(1f, 0f, t);
+
+            //        _bulbMat.SetFloat(OnID, v);
+            //        mpb.SetFloat(LitID, v);
+            //        rend.SetPropertyBlock(mpb);
+            //        yield return null;
+            //    }
+            //}
+
+            //_bulbMat.SetFloat(OnID, 0f);
+            //foreach (var cardObj in gameState.cards)
+            //{
+            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
+            //    rend.GetPropertyBlock(mpb);
+            //    mpb.SetFloat(LitID, 0f);
+            //    rend.SetPropertyBlock(mpb);
+            //}
+            //_bulbMat.SetFloat(OnID, 0f);
 
 
-        //        float angle = Mathf.Cos(vv.y + 2f * elapsedSeconds) * 5;
-        //        float distance = 0.5f;
+        }
 
-        //        int LitID = Shader.PropertyToID("_on");
-        //        Renderer rend = card.GetComponentInChildren<Renderer>();
-        //        Material mat = rend.material;
-        //        float lightBulbLight = bulbRenderer.sharedMaterial.GetFloat(LitID);
-        //        float onOff = lightBulbLight == 1 ? 1 : 0;
+        void Update()
+        {
 
-        //        mat.SetFloat("_lit", onOff * distance);
-        //        card.transform.localEulerAngles = new Vector3(
-        //    0,
-        //    0,
-        //    angle
-        //);
+            //    //update gameObect in scene:
+            //    //update the position of each card each frame, to have them floating
+            //    float elapsedSeconds = Time.realtimeSinceStartup - startTime;
+            //    float y = Mathf.Cos(elapsedSeconds / 60) * 30;
+            //    float elapsedMs = elapsedSeconds * 1000f;
+
+            //    var cardObject = GameObject.FindGameObjectsWithTag("Card");
+
+            //    foreach (var card in cardObject)
+            //    {
+            //        // find parent, and get card_i_j
+            //        Vector2 vv = GetCardFromGameObject(card.name);
+
+            //        card.transform.position = new Vector3(
+            //            card.transform.position.x,
+            //           card.transform.position.y + 0.02f * Mathf.Cos(elapsedSeconds + vv.x % 5 + vv.y),
+            //            //make this value relative to the card height
+            //            card.transform.position.z
+            //        );
+
+
+            //        float angle = Mathf.Cos(vv.y + 2f * elapsedSeconds) * 5;
+            //        float distance = 0.5f;
+
+            //        int LitID = Shader.PropertyToID("_on");
+            //        Renderer rend = card.GetComponentInChildren<Renderer>();
+            //        Material mat = rend.material;
+            //        float lightBulbLight = bulbRenderer.sharedMaterial.GetFloat(LitID);
+            //        float onOff = lightBulbLight == 1 ? 1 : 0;
+
+            //        mat.SetFloat("_lit", onOff * distance);
+            //        card.transform.localEulerAngles = new Vector3(
+            //    0,
+            //    0,
+            //    angle
+            //);
+        }
     }
 }
 

@@ -122,8 +122,7 @@ public class GameState
                 GameObject cardsGO = GameObject.Find("Cards");
                 CreateCards _cards = cardsGO.GetComponent<CreateCards>();
                 _cards.TriggerLamp();
-
-
+                matchHistory.Add(false);//pad with false, otherwise if the next is matching, we will get another pair of matching cards
             }
             
         }
