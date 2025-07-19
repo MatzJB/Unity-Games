@@ -78,14 +78,11 @@ public class Interaction : MonoBehaviour
 
     void OnMouseDown()
     {
-        //gameState.Tornado();
-
-        //for some reason gameState is null here, despite init running for each card... how is that possible?
         CardIndex indexComponent = this.GetComponentInParent<CardIndex>();
         if (indexComponent != null)
         {
             int index = indexComponent.index;
-            gameState.CardClicked(index);// this does work
+            gameState.CardClicked(index);
         }
     }
 

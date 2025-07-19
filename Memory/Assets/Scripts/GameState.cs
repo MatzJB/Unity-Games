@@ -55,7 +55,7 @@ public class GameState
 
         deck = JsonConvert.DeserializeObject<List<Card>>(cardDataFilename);
         levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
-      
+
         LevelState level = levelStates[stage];
 
         int rows_ = level.Rows;
@@ -78,8 +78,8 @@ public class GameState
     public void CardClicked(int cardIndex)
     {
         // get index from cardObject not the index in "cards"
-        CardObject cardObject = (CardObject) cards.Where(x => x.Data.Index == cardIndex).First();
-        
+        CardObject cardObject = (CardObject)cards.Where(x => x.Data.Index == cardIndex).First();
+
         //TODO: dont' allow a flip until the animation is finished
         if (cardObject.Data.CurrentState == Card.State.Finished)
         {
@@ -95,7 +95,7 @@ public class GameState
             var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
             currentCardInteraction.FlipCard(true);
             currentCardObject.Data.SetState(Card.State.FaceUp);
-            
+
             return;
         }
         // second card clicked
@@ -117,7 +117,7 @@ public class GameState
                 previousCardObject.Data.SetState(Card.State.Finished);
                 currentCardObject.Data.SetState(Card.State.Finished);
                 previousCardObject = null; // reset previous card
-                matchHistory.Add(true);                
+                matchHistory.Add(true);
             }
             else
             {
@@ -132,7 +132,7 @@ public class GameState
                 currentCardObject = null;
                 matchHistory.Add(false);
 
-                
+
             }
             //check for bonus or penalty
             //if the two last matchings are true, then give the lamp bonus
@@ -143,18 +143,14 @@ public class GameState
                 _cards.TriggerLamp();
                 matchHistory.Add(false);//pad with false, otherwise if the next is matching, we will get another pair of matching cards
             }
-            
+
         }
 
 
-
-
         //check how many cards are totally turned over
-
         if (IsLevelDone())
         {
             // Show stats and then change to new level
-
         }
 
         previousCardObject = null;

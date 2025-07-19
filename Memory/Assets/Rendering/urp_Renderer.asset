@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: FullScreenPassRendererFeature
   m_EditorClassIdentifier: 
   m_Active: 1
-  injectionPoint: 450
+  injectionPoint: 600
   fetchColorBuffer: 1
-  requirements: 0
+  requirements: 4
   passMaterial: {fileID: -876546973899608171, guid: 8c5be6663ecbb514d86a1be61c23e72f,
     type: 3}
   passIndex: 0
@@ -75,7 +75,7 @@ MonoBehaviour:
   m_DepthAttachmentFormat: 0
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
-  m_IntermediateTextureMode: 1
+  m_IntermediateTextureMode: 0
 --- !u!114 &1762655400474741755
 MonoBehaviour:
   m_ObjectHideFlags: 0

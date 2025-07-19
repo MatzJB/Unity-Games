@@ -15,8 +15,6 @@ public class CreateCards : MonoBehaviour
     GameObject lightBulb;
     public GameState gameState;
     GameObject cards__;
-    //private int OnID = Shader.PropertyToID("_on");
-    //private int LitID = Shader.PropertyToID("_lit");
     int OnID = Shader.PropertyToID("_on"); //bulb
     int LitID = Shader.PropertyToID("_lit"); //card
     int BulbTransparencyID = Shader.PropertyToID("_transparency");
@@ -126,7 +124,7 @@ public class CreateCards : MonoBehaviour
     {
         if (GameState.Instance == null)
             Debug.LogError("GameState.Instance is null");
-        var gameState = GameState.Instance;
+        gameState = GameState.Instance;
 
         LevelState levelData = gameState.levelStates[gameState.stage];
 
@@ -158,7 +156,6 @@ public class CreateCards : MonoBehaviour
 
             lightBulb.GetComponentInChildren<Renderer>().GetPropertyBlock(mpb);
             _bulbMat.SetFloat(BulbTransparencyID, v);
-            //lightBulb.transform.position = lightBulb.transform.position + new Vector3(0, 0.5f, 0);
         }
 
         //TODO: check that the cards are updated properly
@@ -191,51 +188,7 @@ public class CreateCards : MonoBehaviour
 
                 mpb.SetFloat(LitID, 0f);
                 rend.SetPropertyBlock(mpb);
-
             }
-
-
-        }
-
-        void Update()
-        {
-
-            //    //update gameObect in scene:
-            //    //update the position of each card each frame, to have them floating
-            //    float elapsedSeconds = Time.realtimeSinceStartup - startTime;
-            //    float y = Mathf.Cos(elapsedSeconds / 60) * 30;
-            //    float elapsedMs = elapsedSeconds * 1000f;
-
-            //    var cardObject = GameObject.FindGameObjectsWithTag("Card");
-
-            //    foreach (var card in cardObject)
-            //    {
-            //        // find parent, and get card_i_j
-            //        Vector2 vv = GetCardFromGameObject(card.name);
-
-            //        card.transform.position = new Vector3(
-            //            card.transform.position.x,
-            //           card.transform.position.y + 0.02f * Mathf.Cos(elapsedSeconds + vv.x % 5 + vv.y),
-            //            //make this value relative to the card height
-            //            card.transform.position.z
-            //        );
-
-
-            //        float angle = Mathf.Cos(vv.y + 2f * elapsedSeconds) * 5;
-            //        float distance = 0.5f;
-
-            //        int LitID = Shader.PropertyToID("_on");
-            //        Renderer rend = card.GetComponentInChildren<Renderer>();
-            //        Material mat = rend.material;
-            //        float lightBulbLight = bulbRenderer.sharedMaterial.GetFloat(LitID);
-            //        float onOff = lightBulbLight == 1 ? 1 : 0;
-
-            //        mat.SetFloat("_lit", onOff * distance);
-            //        card.transform.localEulerAngles = new Vector3(
-            //    0,
-            //    0,
-            //    angle
-            //);
         }
     }
 }

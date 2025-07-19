@@ -12,8 +12,10 @@ public class Bonus_wind : MonoBehaviour
     void OnMouseDown()
     {
         Debug.Log("clicked!");
+        if (GameState.Instance!=null)
+        { 
         GameState.Instance.Tornado();
-
+        }
     }
 
 }

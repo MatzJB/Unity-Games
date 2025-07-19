@@ -1063,7 +1063,7 @@
             "m_Id": "85ce0dceb2984eaabe599a94a51bfdda"
         },
         {
-            "m_Id": "ff2ef6f3dcc049bb99ae39cb3e4567ca"
+            "m_Id": "45c3bf4bf1604cc9b8e2c3b149c365d9"
         }
     ],
     "synonyms": [
@@ -1078,7 +1078,7 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     },
-    "m_BufferType": 2
+    "m_BufferType": 0
 }
 
 {
@@ -1269,6 +1269,29 @@
         "m_SerializableColors": []
     },
     "m_SerializedDescriptor": "VertexDescription.Tangent"
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
+    "m_ObjectId": "45c3bf4bf1604cc9b8e2c3b149c365d9",
+    "m_Id": 2,
+    "m_DisplayName": "Output",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Output",
+    "m_StageCapability": 2,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "m_Labels": []
 }
 
 {
@@ -2586,30 +2609,5 @@
     },
     "m_Labels": [],
     "m_Space": 0
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.ColorRGBAMaterialSlot",
-    "m_ObjectId": "ff2ef6f3dcc049bb99ae39cb3e4567ca",
-    "m_Id": 2,
-    "m_DisplayName": "Output",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Output",
-    "m_StageCapability": 2,
-    "m_Value": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "w": 1.0
-    },
-    "m_DefaultValue": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "w": 1.0
-    },
-    "m_Labels": []
 }
 
