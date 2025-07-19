@@ -9,7 +9,7 @@ using UnityEngine.Analytics;
 
 public class CreateCards : MonoBehaviour
 {
-    float startTime;
+    //float startTime;
     GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
     GameObject lightBulb;
@@ -24,7 +24,8 @@ public class CreateCards : MonoBehaviour
 
     void Start()
     {
-        gameState = new GameState();
+        GameState gameState = GameState.Instance; //TODO: check this
+        
         UnityEngine.Debug.Log("gamestate " + gameState);
         UnityEngine.Debug.Assert(gameState != null, "Failed to add GameState component");
         UnityEngine.Debug.Log("Creating GameState object");
@@ -36,7 +37,7 @@ public class CreateCards : MonoBehaviour
         InitCards();
         cards__ = GameObject.Find("master_card"); //master_card or Cards
 
-        startTime = Time.realtimeSinceStartup;
+        //startTime = Time.realtimeSinceStartup;
     }
 
 
@@ -116,12 +117,17 @@ public class CreateCards : MonoBehaviour
         }
 
         cards_.transform.position = origin;
-        Misc.Randomize(gameState.cards);
+        //TODO: check origin is correct
+        Misc.Randomize(gameState.cards); //is this working?
     }
 
     // Find the board and places cards randomly
     public void InitCards() // load level
     {
+        if (GameState.Instance == null)
+            Debug.LogError("GameState.Instance is null");
+        var gameState = GameState.Instance;
+
         LevelState levelData = gameState.levelStates[gameState.stage];
 
         BuildBoard();
@@ -143,17 +149,16 @@ public class CreateCards : MonoBehaviour
         Material card_mat = cards__.GetComponent<Renderer>().material;
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         float elapsed = 0f;
-        Vector3 lightBulbPosition = lightBulb.transform.localPosition;
-
+        //Vector3 lightBulbPosition = lightBulb.transform.localPosition;
 
 
         for (float t = 0f; t < 1f; t += Time.deltaTime)
         {
             float v = Mathf.Lerp(0f, 1f, t);
 
-            mpb = lightBulb.GetComponentInChildren<Renderer>().GetPropertyBlock(mpb);
+            lightBulb.GetComponentInChildren<Renderer>().GetPropertyBlock(mpb);
             _bulbMat.SetFloat(BulbTransparencyID, v);
-            lightBulb.transform.position = lightBulb.transform.position + new Vector3(0, 0.5f, 0);
+            //lightBulb.transform.position = lightBulb.transform.position + new Vector3(0, 0.5f, 0);
         }
 
         //TODO: check that the cards are updated properly
@@ -188,62 +193,6 @@ public class CreateCards : MonoBehaviour
                 rend.SetPropertyBlock(mpb);
 
             }
-
-
-
-
-            ////card_mat.SetFloat(LitID, 1f);
-            //foreach (var cardObj in gameState.cards)
-            //{
-            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
-            //    rend.GetPropertyBlock(mpb);
-
-            //    mpb.SetFloat(LitID, 1f);
-            //    rend.SetPropertyBlock(mpb);
-
-            //    _bulbMat.SetFloat(OnID, onOff);
-            //}
-            ////new
-            //foreach (var cardObj in gameState.cards)
-            //{
-            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
-            //    rend.GetPropertyBlock(mpb);
-
-            //    for (float t = 0f; t < 1f; t += Time.deltaTime)
-            //    {
-            //        float v = Mathf.Lerp(1f, 0f, t);
-            //        _bulbMat.SetFloat(OnID, v);
-            //        mpb.SetFloat(LitID, v);
-            //        rend.SetPropertyBlock(mpb);
-
-            //        yield return null;
-            //    }
-            //}
-
-            //foreach (var cardObj in gameState.cards)
-            //{
-            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
-            //    rend.GetPropertyBlock(mpb);
-            //    for (float t = 0f; t < 1f; t += Time.deltaTime)
-            //    {
-            //        float v = Mathf.Lerp(1f, 0f, t);
-
-            //        _bulbMat.SetFloat(OnID, v);
-            //        mpb.SetFloat(LitID, v);
-            //        rend.SetPropertyBlock(mpb);
-            //        yield return null;
-            //    }
-            //}
-
-            //_bulbMat.SetFloat(OnID, 0f);
-            //foreach (var cardObj in gameState.cards)
-            //{
-            //    Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
-            //    rend.GetPropertyBlock(mpb);
-            //    mpb.SetFloat(LitID, 0f);
-            //    rend.SetPropertyBlock(mpb);
-            //}
-            //_bulbMat.SetFloat(OnID, 0f);
 
 
         }

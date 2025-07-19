@@ -13,6 +13,9 @@ public class GameState
     public int stage = -1; // current stage, reference levelState
     public int numberOfTurns; // 0, 1 or 2
 
+    public float startTime; //used for animation
+
+    //TODO: check if we need to serialize:
     [Header("Level & asset files")]
     [SerializeField] string levelDataFile = "levelData.json";
     [SerializeField] string cardJsonFile = "cardData.json";
@@ -26,8 +29,24 @@ public class GameState
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
 
-    public GameState()
+
+    private static GameState _instance;
+    // public accessor—will never return null
+    public static GameState Instance
     {
+        get
+        {
+            if (_instance == null)
+                _instance = new GameState();
+            return _instance;
+        }
+    }
+
+    // private ctor prevents external new()
+
+    private GameState()
+    {
+        startTime = Time.realtimeSinceStartup;
         stage = 0;
 
         //TODO: add a high scores JSON?
@@ -176,8 +195,14 @@ public class GameState
 
 
     // Rotates the cards around the center of the cloud
-    void Tornado()
+    public void Tornado()
     {
+        foreach (CardObject card in cards)
+        {
+            var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
+            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.SpinCard(5, 20));
+        }
+
     }
 
     // Reveals the cards by lighting a light bulb
