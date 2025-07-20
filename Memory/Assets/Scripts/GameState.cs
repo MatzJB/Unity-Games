@@ -191,7 +191,7 @@ public class GameState
         foreach (CardObject card in cards)
         {
             var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
-            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.SpinCard(5, 20));
+            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.SpinCard(2, 10));
         }
 
     }
