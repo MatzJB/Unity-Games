@@ -4,8 +4,6 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
-
-
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
 public class GameState
@@ -29,10 +27,9 @@ public class GameState
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
 
-
     private static GameState _instance;
-    // public accessor—will never return null
     public static GameState Instance
+
     {
         get
         {
@@ -113,7 +110,7 @@ public class GameState
             if (currentCardObject.Data.GroupIndex == previousCardObject.Data.GroupIndex)
             {
                 // do something, like remove the cards or mark them as matched
-                Debug.Log("Cards match!");
+                //Debug.Log("Cards match!");
                 previousCardObject.Data.SetState(Card.State.Finished);
                 currentCardObject.Data.SetState(Card.State.Finished);
                 previousCardObject = null; // reset previous card
@@ -131,8 +128,6 @@ public class GameState
                 previousCardObject = null;
                 currentCardObject = null;
                 matchHistory.Add(false);
-
-
             }
             //check for bonus or penalty
             //if the two last matchings are true, then give the lamp bonus
