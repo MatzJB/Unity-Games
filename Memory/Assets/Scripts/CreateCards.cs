@@ -23,7 +23,7 @@ public class CreateCards : MonoBehaviour
     void Start()
     {
         GameState gameState = GameState.Instance; //TODO: check this
-        
+
         UnityEngine.Debug.Log("gamestate " + gameState);
         UnityEngine.Debug.Assert(gameState != null, "Failed to add GameState component");
         UnityEngine.Debug.Log("Creating GameState object");
@@ -83,10 +83,8 @@ public class CreateCards : MonoBehaviour
 
             var currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
             currentCardInteraction.Init(gameState);
-            UnityEngine.Debug.Log($" cardindex added {i}");
 
             // important because Interaction is in the parent, and we want these two to be close by
-            //go..AddComponent<CardIndex>().index = i;
             go.transform.localScale = Vector3.one * 0.8f;
             go.transform.SetParent(cards_.transform, false);
             //be careful because Interaction.cs scales back to 1 because of hovering effect... maybe there is a better way?
@@ -115,7 +113,6 @@ public class CreateCards : MonoBehaviour
         }
 
         cards_.transform.position = origin;
-        //TODO: check origin is correct
         Misc.Randomize(gameState.cards); //is this working?
     }
 
@@ -131,7 +128,6 @@ public class CreateCards : MonoBehaviour
         BuildBoard();
         gameState.StartCurrentStage();
     }
-    // Update is called once per frame
 
 
     public void TriggerLamp()
@@ -148,7 +144,6 @@ public class CreateCards : MonoBehaviour
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         float elapsed = 0f;
         //Vector3 lightBulbPosition = lightBulb.transform.localPosition;
-
 
         for (float t = 0f; t < 1f; t += Time.deltaTime)
         {

@@ -1,16 +1,21 @@
+using GameNamespace;
 using UnityEngine;
 
 public class BonusClickable : MonoBehaviour
 {
-    public int bonusType;
+    public BonusType bonusType;
 
-    void OnEnable()
+    void Awake()
     {
         GameState.Instance.OnBonusAvailabilityChanged += UpdateVisibility;
-        UpdateVisibility();
     }
 
-    void OnDisable()
+    void Start()
+    {
+        UpdateVisibility();  // hide/show based on default availability
+    }
+
+    void OnDestroy()
     {
         GameState.Instance.OnBonusAvailabilityChanged -= UpdateVisibility;
     }

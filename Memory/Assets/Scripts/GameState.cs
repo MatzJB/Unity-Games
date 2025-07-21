@@ -2,28 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using GameNamespace;
 using Newtonsoft.Json;
 using UnityEngine;
-
-
-public enum BonusType
-{
-    Wind,
-    Idea
-
-}
-
+using UnityEngine.XR;
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
 public class GameState
 {
-    public int stage = -1; // current stage, reference levelState
-    public int numberOfTurns; // 0, 1 or 2
+    public int stage; // current stage, reference levelState
+    //public int numberOfTurns; // 0, 1 or 2
+    public float startTime; // used for animation
 
-    public float startTime; //used for animation
-
-    //TODO: check if we need to serialize:
+    // TODO: check if we need to serialize:
     [Header("Level & asset files")]
     [SerializeField] string levelDataFile = "levelData.json";
     [SerializeField] string cardJsonFile = "cardData.json";
@@ -49,41 +41,6 @@ public class GameState
     }
 
 
-    static readonly HashSet<BonusType> available = new HashSet<BonusType>();
-    public static event Action OnBonusAvailabilityChanged;
-
-    public static bool IsBonusAvailable(BonusType bonus)
-        => available.Contains(bonus);
-
-    public static void SetBonusAvailable(BonusType bonus, bool yes)
-    {
-        if (yes) available.Add(bonus);
-        else available.Remove(bonus);
-        OnBonusAvailabilityChanged?.Invoke();
-    }
-
-    public static void GrantBonus(BonusType bonus)
-    {
-        if(bonus==BonusType.Wind)
-        {
-            _instance.Wind();
-
-        }
-        if(bonus==BonusType.Idea)
-        {
-            _instance.Idea();
-            _cards.TriggerLamp();
-            //TODO. fix this
-        }
-
-
-        // your grant logic here
-        SetBonusAvailable(bonus, false);
-    }
-
-
-    // private ctor prevents external new()
-
     private GameState()
     {
         startTime = Time.realtimeSinceStartup;
@@ -95,14 +52,44 @@ public class GameState
 
         deck = JsonConvert.DeserializeObject<List<Card>>(cardDataFilename);
         levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
-
         LevelState level = levelStates[stage];
 
-        int rows_ = level.Rows;
-        int cols_ = level.Columns;
-        cards = Enumerable.Repeat<CardObject>(null, cols_ * rows_).ToList();
+        cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
         matchHistory = new List<bool>();
     }
+
+    // Button related code
+    readonly HashSet<GameNamespace.BonusType> available = new HashSet<GameNamespace.BonusType>();
+    public  event Action OnBonusAvailabilityChanged;
+
+    public bool IsBonusAvailable(GameNamespace.BonusType bonus)
+        => available.Contains(bonus);
+
+    public void SetBonusAvailable(GameNamespace.BonusType bonus, bool bonusAvailable)
+    {
+        if (bonusAvailable) available.Add(bonus);
+        else available.Remove(bonus);
+        OnBonusAvailabilityChanged?.Invoke();
+    }
+
+    public void GrantBonus(GameNamespace.BonusType bonus)
+    {
+        if(bonus== GameNamespace.BonusType.Wind)
+        {
+            _instance.Wind();
+
+        }
+        if(bonus== GameNamespace.BonusType.Idea)
+        {
+            _instance.Idea();
+           
+            //TODO. fix lamp trigger
+        }
+
+        //remove the bonus from the available bonuses
+        SetBonusAvailable(bonus, false);
+    }
+
 
     public void AddCard(CardObject co, int i)
     {
@@ -120,7 +107,7 @@ public class GameState
         // get index from cardObject not the index in "cards"
         CardObject cardObject = (CardObject)cards.Where(x => x.Data.Index == cardIndex).First();
 
-        //TODO: dont' allow a flip until the animation is finished
+        // TODO: dont' allow a flip until the current animation is finished, check the state
         if (cardObject.Data.CurrentState == Card.State.Finished)
         {
             return;
@@ -150,10 +137,10 @@ public class GameState
 
             currentCardInteraction.FlipCard(true);
 
+            // Matching cards
             if (currentCardObject.Data.GroupIndex == previousCardObject.Data.GroupIndex)
             {
                 // do something, like remove the cards or mark them as matched
-                //Debug.Log("Cards match!");
                 previousCardObject.Data.SetState(Card.State.Finished);
                 currentCardObject.Data.SetState(Card.State.Finished);
                 previousCardObject = null; // reset previous card
@@ -172,23 +159,24 @@ public class GameState
                 currentCardObject = null;
                 matchHistory.Add(false);
             }
-            //check for bonus or penalty
-            //if the two last matchings are true, then give the lamp bonus
+
+            //TODO: if the two last matchings are true, then give the lamp bonus
             if (LastTwoAreTrue(matchHistory))
             {
                 GameObject cardsGO = GameObject.Find("Cards");
                 CreateCards _cards = cardsGO.GetComponent<CreateCards>();
-                
-                matchHistory.Add(false);//pad with false, otherwise if the next is matching, we will get another pair of matching cards
-            }
 
+                GameState.Instance.SetBonusAvailable(GameNamespace.BonusType.Idea, true);
+
+                matchHistory.Add(false); //pad with false, otherwise if the next is matching, we will get another pair of matching cards
+            }
         }
 
 
-        //check how many cards are totally turned over
+        // TODO: check how many cards are totally turned over
         if (IsLevelDone())
         {
-            // Show stats and then change to new level
+            // TODO: Show stats and then change to new level
         }
 
         previousCardObject = null;
@@ -197,10 +185,11 @@ public class GameState
 
     public void Click()
     {
-        Debug.Log("Click!!");
+        //Debug.Log("Click!!");
 
     }
 
+    // check list of bools if the last two elements are true (for matchHistory)
     bool LastTwoAreTrue(IList<bool>? list)
     {
         return list != null &&
@@ -208,6 +197,7 @@ public class GameState
                list.TakeLast(2).All(v => v);
     }
 
+    // Turn all the cards to show them for a short time
     public void ShowAllCards()
     {
         foreach (CardObject card in cards)
@@ -227,12 +217,14 @@ public class GameState
         return cards.All(item => item.Data.CurrentState == Card.State.Finished);
     }
 
-
   
-    // Reveals the cards by lighting a light bulb
+    // Reveals the cards by lighting a light bulb.
     void Idea()
     {
-
+        //TODO: make this neater
+        GameObject cardsGO = GameObject.Find("Cards");
+        CreateCards _cards = cardsGO.GetComponent<CreateCards>();
+        _cards.TriggerLamp();
 
     }
 
