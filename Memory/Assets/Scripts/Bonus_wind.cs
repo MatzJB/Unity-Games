@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Bonus_wind : MonoBehaviour
+public class Bonus : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -12,9 +12,9 @@ public class Bonus_wind : MonoBehaviour
     void OnMouseDown()
     {
         Debug.Log("clicked!");
-        if (GameState.Instance!=null)
-        { 
-        GameState.Instance.Tornado();
+        if (GameState.Instance != null)
+        {
+            GameState.Instance.Tornado();
         }
     }
 

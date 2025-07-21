@@ -1,8 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
+
+
+public enum BonusType
+{
+    Wind,
+    Idea
+
+}
+
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
@@ -29,7 +39,6 @@ public class GameState
 
     private static GameState _instance;
     public static GameState Instance
-
     {
         get
         {
@@ -38,6 +47,40 @@ public class GameState
             return _instance;
         }
     }
+
+
+    static readonly HashSet<BonusType> available = new HashSet<BonusType>();
+    public static event Action OnBonusAvailabilityChanged;
+
+    public static bool IsBonusAvailable(BonusType bonus)
+        => available.Contains(bonus);
+
+    public static void SetBonusAvailable(BonusType bonus, bool yes)
+    {
+        if (yes) available.Add(bonus);
+        else available.Remove(bonus);
+        OnBonusAvailabilityChanged?.Invoke();
+    }
+
+    public static void GrantBonus(BonusType bonus)
+    {
+        if(bonus==BonusType.Wind)
+        {
+            _instance.Wind();
+
+        }
+        if(bonus==BonusType.Idea)
+        {
+            _instance.Idea();
+            _cards.TriggerLamp();
+            //TODO. fix this
+        }
+
+
+        // your grant logic here
+        SetBonusAvailable(bonus, false);
+    }
+
 
     // private ctor prevents external new()
 
@@ -135,7 +178,7 @@ public class GameState
             {
                 GameObject cardsGO = GameObject.Find("Cards");
                 CreateCards _cards = cardsGO.GetComponent<CreateCards>();
-                _cards.TriggerLamp();
+                
                 matchHistory.Add(false);//pad with false, otherwise if the next is matching, we will get another pair of matching cards
             }
 
@@ -185,26 +228,23 @@ public class GameState
     }
 
 
-    // Rotates the cards around the center of the cloud
-    public void Tornado()
-    {
-        foreach (CardObject card in cards)
-        {
-            var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
-            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.SpinCard(2, 10));
-        }
-
-    }
-
+  
     // Reveals the cards by lighting a light bulb
     void Idea()
     {
+
+
     }
 
     // Spins all cards a couple turns
     // requires the cards the themselves have knowledge about their position
     void Wind()
     {
+        foreach (CardObject card in cards)
+        {
+            var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
+            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.SpinCard(2, 10));
+        }
     }
 
     void NextLevel()
