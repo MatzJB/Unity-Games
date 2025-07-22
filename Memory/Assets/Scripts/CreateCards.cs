@@ -9,47 +9,31 @@ using UnityEngine.Analytics;
 
 public class CreateCards : MonoBehaviour
 {
-    //float startTime;
     GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
     GameObject lightBulb;
-    public GameState gameState;
     GameObject cards__;
     int OnID = Shader.PropertyToID("_on"); //bulb
     int LitID = Shader.PropertyToID("_lit"); //card
     int BulbTransparencyID = Shader.PropertyToID("_transparency");
 
-
     void Start()
     {
-        GameState gameState = GameState.Instance; //TODO: check this
-
-        UnityEngine.Debug.Log("gamestate " + gameState);
-        UnityEngine.Debug.Assert(gameState != null, "Failed to add GameState component");
-        UnityEngine.Debug.Log("Creating GameState object");
-
         cloud = GameObject.Find("Cloud");
         cardBounds = Misc.GetBounds("Cloud");
         lightBulb = GameObject.Find("Light bulb");
 
         InitCards();
         cards__ = GameObject.Find("master_card"); //master_card or Cards
-
-        //startTime = Time.realtimeSinceStartup;
     }
 
-
-    public void Awake()
-    {
-
-    }
 
     // Build gameObjects, register with gameState.cards
     public void BuildBoard()
     {
         UnityEngine.Debug.Log("buildboard");
 
-        LevelState level = gameState.levelStates[gameState.stage];
+        LevelState level = GameState.Instance.levelStates[GameState.Instance.stage];
 
         int rows_ = level.Rows;
         int cols_ = level.Columns;
@@ -82,7 +66,6 @@ public class CreateCards : MonoBehaviour
             ci.index = i;
 
             var currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
-            currentCardInteraction.Init(gameState);
 
             // important because Interaction is in the parent, and we want these two to be close by
             go.transform.localScale = Vector3.one * 0.8f;
@@ -98,7 +81,7 @@ public class CreateCards : MonoBehaviour
 
             Shader cardShader = Shader.Find("Shader Graphs/Card");
             int frontTexPropId = Shader.PropertyToID("_FrontTexture");
-            string filename = gameState.deck[i].Path.Replace(".png", "");
+            string filename = GameState.Instance.deck[i].Path.Replace(".png", "");
             Texture2D tex = Resources.Load<Texture2D>(filename);
             Renderer rend = go.GetComponentInChildren<Renderer>(); // the one that’s already there
             var mpb = new MaterialPropertyBlock();
@@ -106,27 +89,23 @@ public class CreateCards : MonoBehaviour
             mpb.SetFloat(BulbTransparencyID, 0f);
             mpb.SetFloat(LitID, 0f);
             rend.SetPropertyBlock(mpb);
-            CardObject tmp = new CardObject(gameState.deck[i], go);
+            CardObject tmp = new CardObject(GameState.Instance.deck[i], go);
             tmp.Data.Index = i;
             // add cards using index because otherwise we cannot randomize them
-            gameState.AddCard(tmp, i);
+            GameState.Instance.AddCard(tmp, i);
         }
 
         cards_.transform.position = origin;
-        Misc.Randomize(gameState.cards); //is this working?
+        Misc.Randomize(GameState.Instance.cards); //is this working?
     }
+    
 
     // Find the board and places cards randomly
     public void InitCards() // load level
     {
-        if (GameState.Instance == null)
-            Debug.LogError("GameState.Instance is null");
-        gameState = GameState.Instance;
-
-        LevelState levelData = gameState.levelStates[gameState.stage];
-
+        //LevelState levelData = GameState.Instance.levelStates[GameState.Instance.stage];
         BuildBoard();
-        gameState.StartCurrentStage();
+        GameState.Instance.StartCurrentStage();
     }
 
 
@@ -158,7 +137,7 @@ public class CreateCards : MonoBehaviour
         {
             float onOff = UnityEngine.Random.value < 0.5f ? 1f : 0f;
 
-            foreach (var cardObj in gameState.cards)
+            foreach (var cardObj in GameState.Instance.cards)
             {
                 Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
                 rend.GetPropertyBlock(mpb);
@@ -176,7 +155,8 @@ public class CreateCards : MonoBehaviour
 
             _bulbMat.SetFloat(OnID, 0f);
 
-            foreach (var cardObj in gameState.cards)
+
+            foreach (var cardObj in GameState.Instance.cards)
             {
                 Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
                 rend.GetPropertyBlock(mpb);
@@ -185,6 +165,9 @@ public class CreateCards : MonoBehaviour
                 rend.SetPropertyBlock(mpb);
             }
         }
+
+        _bulbMat.SetFloat(BulbTransparencyID, 0f);
+
     }
 }
 

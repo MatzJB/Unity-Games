@@ -8,7 +8,6 @@ using UnityEngine.UIElements;
 /*
  Responsible for interactions and animation of each card. 
  Each card has this script attached to it.
-
  */
 
 public class Interaction : MonoBehaviour
@@ -17,7 +16,7 @@ public class Interaction : MonoBehaviour
     public float hoverScaleFactor = 1.2f;
     public float smoothSpeed = 10f;
     private Vector3 targetScale;
-    public GameState gameState;
+    //public GameState gameState;
     private Material _bulbMat;
     //bonuses and penalties are here:
     GameObject bulb;
@@ -41,9 +40,9 @@ public class Interaction : MonoBehaviour
         smoothSpeed * Time.deltaTime
         );
 
-        if (gameState != null)
+        if (GameState.Instance != null)
         {
-            float elapsedSeconds = Time.realtimeSinceStartup - gameState.startTime;
+            float elapsedSeconds = Time.realtimeSinceStartup - GameState.Instance.startTime;
             float y = Mathf.Cos(elapsedSeconds / 60) * 30;
             float elapsedMs = elapsedSeconds * 1000f;
 
@@ -69,21 +68,20 @@ public class Interaction : MonoBehaviour
 
     }
 
-    public void Init(GameState gs)
-    {
-        UnityEngine.Debug.Log($" Interaction initialized gameState! {this.GetHashCode()}");
-        gameState = gs;
-    }
+    //public void Init(GameState gs)
+    //{
+    //    //UnityEngine.Debug.Log($" Interaction initialized gameState! {this.GetHashCode()}");
+    //    //gameState = gs;
+    //}
 
 
     void OnMouseDown()
     {
-        CardIndex indexComponent = this.GetComponentInParent<CardIndex>();
-        if (indexComponent != null)
-        {
-            int index = indexComponent.index;
-            gameState.CardClicked(index);
-        }
+        Debug.Log("Interaction.OnMouseDown hit " + gameObject.name);
+
+        var idxComp = GetComponentInParent<CardIndex>();
+        if (idxComp != null)
+            GameState.Instance.CardClicked(idxComp.index);
     }
 
     public void FlipCard(bool faceUp)
@@ -130,13 +128,9 @@ public class Interaction : MonoBehaviour
     }
 
 
-
-
     void OnMouseExit()
     {
         targetScale = defaultScale;
     }
 
 }
-
-

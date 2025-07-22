@@ -5,11 +5,16 @@ using System.Linq;
 using GameNamespace;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.XR;
+using static UnityEditor.Progress;
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
-public class GameState
+
+//[DefaultExecutionOrder(-100)]
+
+    
+
+public sealed class GameState
 {
     public int stage; // current stage, reference levelState
     //public int numberOfTurns; // 0, 1 or 2
@@ -28,38 +33,58 @@ public class GameState
     public List<CardObject> cards; // cards used for current level with gameobjects attached to each card
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
+   
 
-    private static GameState _instance;
-    public static GameState Instance
+    private static readonly GameState _instance = new GameState();
+    public static GameState Instance => _instance;
+
+    private void PopulateLevel(int stage)
     {
-        get
-        {
-            if (_instance == null)
-                _instance = new GameState();
-            return _instance;
-        }
-    }
+        //how many stages?
+        LevelState level = levelStates[stage];
 
+        cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
+        matchHistory = new List<bool>();
+
+        //check that we actually initialized the cards
+    }
 
     private GameState()
     {
-        startTime = Time.realtimeSinceStartup;
-        stage = 0;
-
-        //TODO: add a high scores JSON?
         string cardDataFilename = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, cardJsonFile));
         string levelDataFilename = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, levelDataFile));
 
         deck = JsonConvert.DeserializeObject<List<Card>>(cardDataFilename);
         levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
-        LevelState level = levelStates[stage];
 
-        cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
-        matchHistory = new List<bool>();
+        startTime = Time.realtimeSinceStartup;
+        stage = 1; //change to 0!!!
+        PopulateLevel(stage);
+            }
+
+    public static event Action OnDeckInitialized;
+
+    public void InitializeDeck()
+    {
+        OnDeckInitialized?.Invoke();
     }
 
+    public void DestroyCards()
+    {
+        foreach (CardObject card in cards)
+        {
+            if (card != null && card.View != null)
+            {
+                GameObject.Destroy(card.View);
+            }
+        }
+        cards.Clear();
+    }
+
+ 
+
     // Button related code
-    readonly HashSet<GameNamespace.BonusType> available = new HashSet<GameNamespace.BonusType>();
+    readonly HashSet<GameNamespace.BonusType> available = new HashSet<BonusType>();
     public  event Action OnBonusAvailabilityChanged;
 
     public bool IsBonusAvailable(GameNamespace.BonusType bonus)
@@ -67,6 +92,7 @@ public class GameState
 
     public void SetBonusAvailable(GameNamespace.BonusType bonus, bool bonusAvailable)
     {
+        Debug.Log($"adding bonus {bonus}");
         if (bonusAvailable) available.Add(bonus);
         else available.Remove(bonus);
         OnBonusAvailabilityChanged?.Invoke();
@@ -77,13 +103,10 @@ public class GameState
         if(bonus== GameNamespace.BonusType.Wind)
         {
             _instance.Wind();
-
         }
         if(bonus== GameNamespace.BonusType.Idea)
         {
             _instance.Idea();
-           
-            //TODO. fix lamp trigger
         }
 
         //remove the bonus from the available bonuses
@@ -93,19 +116,27 @@ public class GameState
 
     public void AddCard(CardObject co, int i)
     {
+        co.Data.SetState(Card.State.FaceDown);
         cards[i] = co;
     }
 
+  
 
     public void StartCurrentStage()
     {
         ShowAllCards();
+
+        if (cards.Any(item => item.Data.CurrentState == Card.State.Finished))
+        {
+            Debug.Log("Something is wrong because we just started the stage and at least one card is facing up");
+        }
+
     }
 
     public void CardClicked(int cardIndex)
     {
         // get index from cardObject not the index in "cards"
-        CardObject cardObject = (CardObject)cards.Where(x => x.Data.Index == cardIndex).First();
+        CardObject cardObject = (CardObject) cards.Where(x => x.Data.Index == cardIndex).First();
 
         // TODO: dont' allow a flip until the current animation is finished, check the state
         if (cardObject.Data.CurrentState == Card.State.Finished)
@@ -166,7 +197,16 @@ public class GameState
                 GameObject cardsGO = GameObject.Find("Cards");
                 CreateCards _cards = cardsGO.GetComponent<CreateCards>();
 
-                GameState.Instance.SetBonusAvailable(GameNamespace.BonusType.Idea, true);
+                CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(2));
+
+                if(IsBonusAvailable(BonusType.Idea))
+                {
+                    GameState.Instance.SetBonusAvailable(BonusType.Wind, true);
+                }
+                else
+                {
+                    GameState.Instance.SetBonusAvailable(BonusType.Idea, true);
+                }
 
                 matchHistory.Add(false); //pad with false, otherwise if the next is matching, we will get another pair of matching cards
             }
@@ -176,6 +216,15 @@ public class GameState
         // TODO: check how many cards are totally turned over
         if (IsLevelDone())
         {
+            stage++;
+
+            GameObject cardsGO = GameObject.Find("Cards");
+            CreateCards _cards = cardsGO.GetComponent<CreateCards>();
+            DestroyCards();
+            PopulateLevel(stage);
+            _cards.BuildBoard();
+            StartCurrentStage();
+
             // TODO: Show stats and then change to new level
         }
 
@@ -209,6 +258,7 @@ public class GameState
         {
             var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
             CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 3));
+
         }
     }
 

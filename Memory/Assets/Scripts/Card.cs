@@ -64,8 +64,5 @@ public class Card
     public override string ToString() =>
         $"Card #{Id} [{Category}] ({CurrentState}) path=\"{Path}\"";
 
-    internal void Init(int index, GameState gameState)
-    {
-        throw new NotImplementedException();
-    }
+ 
 }
