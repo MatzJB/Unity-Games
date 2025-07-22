@@ -11,12 +11,6 @@ public class BonusClickable : MonoBehaviour
         GameState.Instance.OnBonusAvailabilityChanged += UpdateVisibility;
     }
 
-
-    void Start()
-    {
-        
-    }
-
     void OnDestroy()
     {
         GameState.Instance.OnBonusAvailabilityChanged -= UpdateVisibility;
@@ -30,7 +24,6 @@ public class BonusClickable : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log("mouse down");
         GameState.Instance.GrantBonus(bonusType);
     }
 }

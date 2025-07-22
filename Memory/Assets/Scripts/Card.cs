@@ -63,6 +63,4 @@ public class Card
 
     public override string ToString() =>
         $"Card #{Id} [{Category}] ({CurrentState}) path=\"{Path}\"";
-
- 
 }

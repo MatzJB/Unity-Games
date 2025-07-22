@@ -9,15 +9,11 @@ using static UnityEditor.Progress;
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
-
-//[DefaultExecutionOrder(-100)]
-
     
 
 public sealed class GameState
 {
     public int stage; // current stage, reference levelState
-    //public int numberOfTurns; // 0, 1 or 2
     public float startTime; // used for animation
 
     // TODO: check if we need to serialize:
@@ -33,20 +29,18 @@ public sealed class GameState
     public List<CardObject> cards; // cards used for current level with gameobjects attached to each card
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
-   
 
     private static readonly GameState _instance = new GameState();
     public static GameState Instance => _instance;
 
     private void PopulateLevel(int stage)
     {
-        //how many stages?
+        //TODO: when we are at the end, stop the game
+
         LevelState level = levelStates[stage];
 
         cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
         matchHistory = new List<bool>();
-
-        //check that we actually initialized the cards
     }
 
     private GameState()
@@ -58,7 +52,9 @@ public sealed class GameState
         levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
 
         startTime = Time.realtimeSinceStartup;
-        stage = 1; //change to 0!!!
+        stage = -1;
+        AdvanceStage();
+
         PopulateLevel(stage);
             }
 
@@ -81,7 +77,26 @@ public sealed class GameState
         cards.Clear();
     }
 
- 
+    public event System.Action<string> OnStageTextChanged;
+
+    string _stageText;
+    public string StageText
+    {
+        get => _stageText;
+        set
+        {
+            if (_stageText == value) return;
+            _stageText = value;
+            OnStageTextChanged?.Invoke(_stageText);
+        }
+    }
+
+    public void AdvanceStage()
+    {
+        stage++;
+        StageText = $"Stage {stage}";
+    }
+
 
     // Button related code
     readonly HashSet<GameNamespace.BonusType> available = new HashSet<BonusType>();
@@ -216,7 +231,7 @@ public sealed class GameState
         // TODO: check how many cards are totally turned over
         if (IsLevelDone())
         {
-            stage++;
+            AdvanceStage();
 
             GameObject cardsGO = GameObject.Find("Cards");
             CreateCards _cards = cardsGO.GetComponent<CreateCards>();
@@ -232,12 +247,7 @@ public sealed class GameState
         currentCardObject = null;
     }
 
-    public void Click()
-    {
-        //Debug.Log("Click!!");
-
-    }
-
+ 
     // check list of bools if the last two elements are true (for matchHistory)
     bool LastTwoAreTrue(IList<bool>? list)
     {

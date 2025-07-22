@@ -2,5 +2,5 @@
   { "stage": 1, "stageName": "Tutorial",     "cardsToMatch": 12,  "rows": 3, "category": "country flags" },
   { "stage": 2, "stageName": "Getting Warm", "cardsToMatch": 8,  "rows": 2, "category": "country flags" },
   { "stage": 3, "stageName": "Seasoned",     "cardsToMatch": 12, "rows": 3, "category": "country flags" },
-  { "stage": 4, "stageName": "Expert",       "cardsToMatch": 18, "rows": 3, "category": "country flags" }
+  { "stage": 4, "stageName": "Expert",       "cardsToMatch": 21, "rows": 3, "category": "country flags" }
 ]

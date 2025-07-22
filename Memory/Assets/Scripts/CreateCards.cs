@@ -4,8 +4,6 @@ using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using UnityEngine.Analytics;
 
-// TODO: refactor this file, move content from createCards to Interaction.cs, Card.cs,...
-// Question: what happens if I switch stage, can I do that in real time in the editor?
 
 public class CreateCards : MonoBehaviour
 {
@@ -122,7 +120,6 @@ public class CreateCards : MonoBehaviour
         Material card_mat = cards__.GetComponent<Renderer>().material;
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
         float elapsed = 0f;
-        //Vector3 lightBulbPosition = lightBulb.transform.localPosition;
 
         for (float t = 0f; t < 1f; t += Time.deltaTime)
         {
@@ -144,7 +141,6 @@ public class CreateCards : MonoBehaviour
 
                 mpb.SetFloat(LitID, onOff * 0.046f);
                 rend.SetPropertyBlock(mpb);
-
             }
 
             _bulbMat.SetFloat(OnID, onOff);
@@ -154,7 +150,6 @@ public class CreateCards : MonoBehaviour
             elapsed += wait;
 
             _bulbMat.SetFloat(OnID, 0f);
-
 
             foreach (var cardObj in GameState.Instance.cards)
             {
@@ -167,9 +162,5 @@ public class CreateCards : MonoBehaviour
         }
 
         _bulbMat.SetFloat(BulbTransparencyID, 0f);
-
     }
 }
-
-
-

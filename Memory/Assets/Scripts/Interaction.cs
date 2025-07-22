@@ -16,9 +16,8 @@ public class Interaction : MonoBehaviour
     public float hoverScaleFactor = 1.2f;
     public float smoothSpeed = 10f;
     private Vector3 targetScale;
-    //public GameState gameState;
+    //TODO: make this neater:
     private Material _bulbMat;
-    //bonuses and penalties are here:
     GameObject bulb;
     Renderer bulbRenderer;
     Time startTime;
@@ -63,22 +62,11 @@ public class Interaction : MonoBehaviour
     // TODO: use this instead of ray tracing in createCards
     void OnMouseUpAsButton()
     {
-        //Debug.Log("I hit a card!");
-
 
     }
-
-    //public void Init(GameState gs)
-    //{
-    //    //UnityEngine.Debug.Log($" Interaction initialized gameState! {this.GetHashCode()}");
-    //    //gameState = gs;
-    //}
-
-
+ 
     void OnMouseDown()
     {
-        Debug.Log("Interaction.OnMouseDown hit " + gameObject.name);
-
         var idxComp = GetComponentInParent<CardIndex>();
         if (idxComp != null)
             GameState.Instance.CardClicked(idxComp.index);
@@ -120,17 +108,14 @@ public class Interaction : MonoBehaviour
     }
 
 
-
     public IEnumerator DelayedFlipCard(bool faceUp, float delay)
     {
         yield return new WaitForSeconds(delay);
         FlipCard(faceUp);
     }
 
-
     void OnMouseExit()
     {
         targetScale = defaultScale;
     }
-
 }
