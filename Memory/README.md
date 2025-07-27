@@ -8,6 +8,12 @@
 ## Idea
 Simple memory card game with some fun game mechanics.
 
+## Shader ideas
+### Heat haze 
+I use "heat haze", which I think make sense, since the cowbor is in the desert after all. I couldn't find any source of information that took me all the way, but Youtube helped me some. I had to create this shader twice because Unity crashed hard once and this shader became corrupt.
+
+### Lighting up cards
+The light buld bonus will light up the cards from behind when it is triggered. This is a simple effect inside my double sided shader triggered by code when the specific bonus is used. 
 
 
 ## Backstory
@@ -30,15 +36,12 @@ The cards are created in code to allow different number of cards.
 Added some animations of the background to make it more interesting.
 
 
-## Considerations
-I try to adhere to Single responsibility principle and I try to go by the principle of making the code as clear, simple to understand and concise as possible. I generally avoid writing comments, the code and naming of functions and variables should be enough to understand what is going on.
+## Considerations while coding
+I am not an expert game dev, but I try to apply sane principles from my dev carreer. First, I try to adhere to a Single Responsibility principle, and I try to go by the principle of making the code as clear, simple to understand and concise as possible. I generally avoid writing comments, the code and naming of functions and variables should be enough to understand what is going on.
 
+I try to keep each script file less than 300 lines of code, if I cannot I seriously consider to either split it up or create functions that I put in a static "misc" class (which can be larger than 300 lines).
 
-I try to keep each script file less than 300 lines of code, if I cannot I seriously consider to either split it up or create functions that I put in a static misc class (which can be larger than 300 lines).
-
-
-
-The GameState is a Singleton, this might be a poor "anti pattern", but unless I do that with everything I think it is fine. I believe it is better than having a gameObject keeping the game states because it forces you to SOLID.
+The GameState is a Singleton, this might be a poor "anti pattern" (according to Youtubers), but unless I do that with everything, I think it is fine. I felt the need to do it in this way because I really don't want to put everything on gameObjects if I can help it.
 
 
 # Development
@@ -70,6 +73,7 @@ When I revisited the game in 2025, I realized, after I had gained some experienc
 
 * In the first version of the game everything about the cards where hard-coded and I had no consideration of making levels. As I revistited the game, I thought I would want to make levels but I wanted all that data to be accessed from the outisde, in a JSON. So, in this updated version I added a JSON for levels and one for the deck. The deck contains all information about the cards that is used in the game. I purposefully left out "state" of the cards, that is something the serializer do not need to worry about as it is not part of the raw information of the cards, but only the state of the game.
 
+* I had some issues trying to apply the lighting of the double sided shader variable, but it turned out when I traversed the card gameObject I found the wrong parent that had a script attached to it and everything, but it turned out to be a disabled script. In my trying to get my code to work I added script to the wrong level.
 
   
 
