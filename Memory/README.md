@@ -9,6 +9,13 @@
 Simple memory card game with some fun game mechanics.
 
 ## Shader ideas
+
+Note: Since the heat haze is rendered after transparents, a unlit transparent will not be affected by it. Everything that is opaque (the background) will.
+
+<img width="458" height="729" alt="image" src="https://github.com/user-attachments/assets/6ded5044-cbd6-4462-a841-c910aecad405" />
+
+
+
 ### Heat haze 
 I use "heat haze", which I think make sense, since the cowbor is in the desert after all. I couldn't find any source of information that took me all the way, but Youtube helped me some. I had to create this shader twice because Unity crashed hard once and this shader became corrupt.
 
