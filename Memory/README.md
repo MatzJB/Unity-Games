@@ -75,5 +75,21 @@ When I revisited the game in 2025, I realized, after I had gained some experienc
 
 * I had some issues trying to apply the lighting of the double sided shader variable, but it turned out when I traversed the card gameObject I found the wrong parent that had a script attached to it and everything, but it turned out to be a disabled script. In my trying to get my code to work I added script to the wrong level.
 
+# Issues
+* Between stages, clicking a card before the cards have turned back over will break the animation state of the cards. Solution: prevent clicking of cards that are in the state of "rotating", maybe introduce another state in the CardObject class?
+
+* Between stages, the cards will redraw and immediatately the stage is over and the next one starts. It would have been nice with a pause between stages and maybe a text stating what stage I am in. I've been thinking about the JSON file should maybe contain the background and if the background should be affected by the heat haze effect. Also, if tumbleweed can be shown (inside the restaurant it cannot).
+
+* The tumble weed should only be visible when the bonus "wind" is used
+
+* Use fading when introducing objects on the screen
+
+* The bonuses should shine and "blink", create that shader
+
+* The ratio and the background doesn't follow when you resize the editor
+
+* Add audio for: card flipping, wind, ambient, light bulb, maybe each card could have him (in his mind) mumble the word in spanish
+  
+* Add blinking of the eyes of the cowboy
   
 
