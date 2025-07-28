@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Analytics;
-using static UnityEngine.Rendering.DebugUI;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UIElements;
 /*
  Responsible for interactions and animation of each card. 
  Each card has this script attached to it.
@@ -16,12 +11,8 @@ public class Interaction : MonoBehaviour
     public float hoverScaleFactor = 1.2f;
     public float smoothSpeed = 10f;
     private Vector3 targetScale;
-    //TODO: make this neater:
-    private Material _bulbMat;
-    GameObject bulb;
-    Renderer bulbRenderer;
-    Time startTime;
     float randomOffset;//used to get unique rotations for animations and placement of cards
+    float angle;
 
     void Start()
     {
@@ -49,7 +40,7 @@ public class Interaction : MonoBehaviour
                                                   transform.parent.position.y + 0.02f * Mathf.Cos(elapsedSeconds + transform.parent.position.x % 5 + transform.parent.position.y),
                                                     transform.parent.position.z);
 
-            float angle = Mathf.Cos(transform.parent.position.y + 2f * elapsedSeconds) * 5f;
+            angle = Mathf.Cos(transform.parent.position.y + 2f * elapsedSeconds) * 5f;
             transform.parent.localEulerAngles = new Vector3(0, 0, angle);
         }
     }
@@ -59,13 +50,7 @@ public class Interaction : MonoBehaviour
         targetScale = defaultScale * hoverScaleFactor;
     }
 
-    // TODO: use this instead of ray tracing in createCards
-    void OnMouseUpAsButton()
-    {
-
-    }
- 
-    void OnMouseDown()
+      void OnMouseDown()
     {
         var idxComp = GetComponentInParent<CardIndex>();
         if (idxComp != null)
@@ -97,9 +82,8 @@ public class Interaction : MonoBehaviour
         while (elapsed < duration)
         {
             float t = elapsed / duration;
-            float angle = Mathf.Lerp(0f, totalDegrees, t);
+            angle = Mathf.Lerp(0f, totalDegrees, t);
             transform.localRotation = startRot * Quaternion.Euler(0f, angle, 0f);
-
             elapsed += Time.deltaTime;
             yield return null;
         }

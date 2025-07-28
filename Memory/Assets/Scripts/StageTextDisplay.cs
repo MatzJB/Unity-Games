@@ -5,7 +5,6 @@ using TMPro;
 [RequireComponent(typeof(Text))]
 public class StageTextDisplay : MonoBehaviour
 {
-
     TMP_Text _label;
 
     void Awake()
@@ -14,7 +13,6 @@ public class StageTextDisplay : MonoBehaviour
         if (_label == null)
             Debug.LogError($"[{name}] no TMP_Text component found");
     }
-
 
     void OnEnable()
     {

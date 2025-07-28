@@ -1,37 +1,39 @@
-﻿using Assets;
-using System.Collections;
-using Unity.Collections.LowLevel.Unsafe;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Assets;
 using UnityEngine;
-using UnityEngine.Analytics;
 
-
+/*
+ Responsible to instantiate the cards.
+ */
 public class CreateCards : MonoBehaviour
 {
-    GameObject cloud;
+    private GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
     GameObject lightBulb;
     GameObject cards__;
-    int OnID = Shader.PropertyToID("_on"); //bulb
-    int LitID = Shader.PropertyToID("_lit"); //card
+    int OnID = Shader.PropertyToID("_on"); // light bulb
+    int LitID = Shader.PropertyToID("_lit"); // card
     int BulbTransparencyID = Shader.PropertyToID("_transparency");
 
-    void Start()
+    public void Awake()
     {
+        var gameState = GameState.Instance;
+
+        //gameState.InitializeDeck();
+    }
+
+    public List<CardObject> BuildBoard(LevelState level, List<Card> deck)
+    {
+        List<CardObject> createdCards = new List<CardObject>();
+
         cloud = GameObject.Find("Cloud");
         cardBounds = Misc.GetBounds("Cloud");
         lightBulb = GameObject.Find("Light bulb");
 
-        InitCards();
+        //GameState.Instance.StartCurrentStage();
+
         cards__ = GameObject.Find("master_card"); //master_card or Cards
-    }
-
-
-    // Build gameObjects, register with gameState.cards
-    public void BuildBoard()
-    {
-        UnityEngine.Debug.Log("buildboard");
-
-        LevelState level = GameState.Instance.levelStates[GameState.Instance.stage];
 
         int rows_ = level.Rows;
         int cols_ = level.Columns;
@@ -39,14 +41,13 @@ public class CreateCards : MonoBehaviour
         GameObject cards_ = GameObject.Find("Cards");
         GameObject card_ = GameObject.Find("Card");
 
-
         float width = cardBounds.max.x - cardBounds.min.x;
         float height = cardBounds.max.y - cardBounds.min.y;
 
         if (width == 0)
         {
-            UnityEngine.Debug.LogError("Card width is zero. Check the prefab’s renderer.");
-            return;
+            Debug.LogError("Card width is zero. Check the prefab’s renderer.");
+            return null;
         }
 
         Vector2 origin = new(cardBounds.min.x + 0.2f * width, cardBounds.min.y);
@@ -64,12 +65,8 @@ public class CreateCards : MonoBehaviour
             ci.index = i;
 
             var currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
-
-            // important because Interaction is in the parent, and we want these two to be close by
             go.transform.localScale = Vector3.one * 0.8f;
             go.transform.SetParent(cards_.transform, false);
-            //be careful because Interaction.cs scales back to 1 because of hovering effect... maybe there is a better way?
-
             go.transform.localPosition = new Vector3(
                     jj,
                     ii,
@@ -79,7 +76,7 @@ public class CreateCards : MonoBehaviour
 
             Shader cardShader = Shader.Find("Shader Graphs/Card");
             int frontTexPropId = Shader.PropertyToID("_FrontTexture");
-            string filename = GameState.Instance.deck[i].Path.Replace(".png", "");
+            string filename = deck[i].Path.Replace(".png", "");
             Texture2D tex = Resources.Load<Texture2D>(filename);
             Renderer rend = go.GetComponentInChildren<Renderer>(); // the one that’s already there
             var mpb = new MaterialPropertyBlock();
@@ -87,33 +84,25 @@ public class CreateCards : MonoBehaviour
             mpb.SetFloat(BulbTransparencyID, 0f);
             mpb.SetFloat(LitID, 0f);
             rend.SetPropertyBlock(mpb);
-            CardObject tmp = new CardObject(GameState.Instance.deck[i], go);
+            CardObject tmp = new CardObject(deck[i], go);
             tmp.Data.Index = i;
-            // add cards using index because otherwise we cannot randomize them
-            GameState.Instance.AddCard(tmp, i);
+            createdCards.Add(tmp);
         }
 
         cards_.transform.position = origin;
-        Misc.Randomize(GameState.Instance.cards); //is this working?
-    }
-    
-
-    // Find the board and places cards randomly
-    public void InitCards() // load level
-    {
-        //LevelState levelData = GameState.Instance.levelStates[GameState.Instance.stage];
-        BuildBoard();
-        GameState.Instance.StartCurrentStage();
+        Misc.Randomize(createdCards);
+        return createdCards;
     }
 
+   
 
     public void TriggerLamp()
     {
         StartCoroutine(FlickerThenFade());
     }
 
-    //would be nicer if this function is located in another persistant class so we dont have to fetch the bulb every time
-    //TODO: new to fix
+    // would be nicer if this function is located in another persistant class so we dont have to fetch the bulb every time
+    // TODO: new to fix
     private IEnumerator FlickerThenFade()
     {
         Material _bulbMat = lightBulb.GetComponent<Renderer>().material;
@@ -129,7 +118,7 @@ public class CreateCards : MonoBehaviour
             _bulbMat.SetFloat(BulbTransparencyID, v);
         }
 
-        //TODO: check that the cards are updated properly
+        // TODO: check that the cards are updated properly
         while (elapsed < 3f)
         {
             float onOff = UnityEngine.Random.value < 0.5f ? 1f : 0f;
@@ -138,7 +127,6 @@ public class CreateCards : MonoBehaviour
             {
                 Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
                 rend.GetPropertyBlock(mpb);
-
                 mpb.SetFloat(LitID, onOff * 0.046f);
                 rend.SetPropertyBlock(mpb);
             }
@@ -151,11 +139,10 @@ public class CreateCards : MonoBehaviour
 
             _bulbMat.SetFloat(OnID, 0f);
 
-            foreach (var cardObj in GameState.Instance.cards)
+            foreach (var cardObj in GameState.Instance.cards) //TODO: replace this
             {
                 Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
                 rend.GetPropertyBlock(mpb);
-
                 mpb.SetFloat(LitID, 0f);
                 rend.SetPropertyBlock(mpb);
             }

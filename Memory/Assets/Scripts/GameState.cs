@@ -5,11 +5,9 @@ using System.Linq;
 using GameNamespace;
 using Newtonsoft.Json;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
-    
 
 public sealed class GameState
 {
@@ -36,7 +34,6 @@ public sealed class GameState
     private void PopulateLevel(int stage)
     {
         //TODO: when we are at the end, stop the game
-
         LevelState level = levelStates[stage];
 
         cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
@@ -56,7 +53,8 @@ public sealed class GameState
         AdvanceStage();
 
         PopulateLevel(stage);
-            }
+        //TODO: check that cards are created!
+    }
 
     public static event Action OnDeckInitialized;
 
@@ -94,37 +92,36 @@ public sealed class GameState
     public void AdvanceStage()
     {
         stage++;
-        StageText = $"Stage {stage}";
+        
+        StageText = $"Stage {levelStates[stage].Stage}";
     }
 
-
     // Button related code
-    readonly HashSet<GameNamespace.BonusType> available = new HashSet<BonusType>();
-    public  event Action OnBonusAvailabilityChanged;
+    readonly HashSet<BonusType> available = new HashSet<BonusType>();
+    public event Action OnBonusAvailabilityChanged;
 
-    public bool IsBonusAvailable(GameNamespace.BonusType bonus)
+    public bool IsBonusAvailable(BonusType bonus)
         => available.Contains(bonus);
 
-    public void SetBonusAvailable(GameNamespace.BonusType bonus, bool bonusAvailable)
+    public void SetBonusAvailable(BonusType bonus, bool bonusAvailable)
     {
-        Debug.Log($"adding bonus {bonus}");
+        //Debug.Log($"adding bonus {bonus}");
         if (bonusAvailable) available.Add(bonus);
         else available.Remove(bonus);
         OnBonusAvailabilityChanged?.Invoke();
     }
 
-    public void GrantBonus(GameNamespace.BonusType bonus)
+    public void GrantBonus(BonusType bonus)
     {
-        if(bonus== GameNamespace.BonusType.Wind)
+        if (bonus == BonusType.Wind)
         {
             _instance.Wind();
         }
-        if(bonus== GameNamespace.BonusType.Idea)
+        if (bonus == BonusType.Idea)
         {
             _instance.Idea();
         }
 
-        //remove the bonus from the available bonuses
         SetBonusAvailable(bonus, false);
     }
 
@@ -135,8 +132,6 @@ public sealed class GameState
         cards[i] = co;
     }
 
-  
-
     public void StartCurrentStage()
     {
         ShowAllCards();
@@ -145,13 +140,12 @@ public sealed class GameState
         {
             Debug.Log("Something is wrong because we just started the stage and at least one card is facing up");
         }
-
     }
 
     public void CardClicked(int cardIndex)
     {
         // get index from cardObject not the index in "cards"
-        CardObject cardObject = (CardObject) cards.Where(x => x.Data.Index == cardIndex).First();
+        CardObject cardObject = (CardObject)cards.Where(x => x.Data.Index == cardIndex).First();
 
         // TODO: dont' allow a flip until the current animation is finished, check the state
         if (cardObject.Data.CurrentState == Card.State.Finished)
@@ -194,7 +188,6 @@ public sealed class GameState
             }
             else
             {
-                // flip these cards back down
                 currentCardObject.Data.SetState(Card.State.FaceDown);
                 previousCardObject.Data.SetState(Card.State.FaceDown);
 
@@ -214,7 +207,7 @@ public sealed class GameState
 
                 CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(2));
 
-                if(IsBonusAvailable(BonusType.Idea))
+                if (IsBonusAvailable(BonusType.Idea))
                 {
                     GameState.Instance.SetBonusAvailable(BonusType.Wind, true);
                 }
@@ -227,17 +220,22 @@ public sealed class GameState
             }
         }
 
-
         // TODO: check how many cards are totally turned over
         if (IsLevelDone())
         {
-            AdvanceStage();
-
+            //TODO: is there a better way to do this?
             GameObject cardsGO = GameObject.Find("Cards");
             CreateCards _cards = cardsGO.GetComponent<CreateCards>();
+
+            var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
+
+            //TODO: add a intro text, some pausing and then advance to the next stage
+            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(2));
+
+            AdvanceStage();
             DestroyCards();
             PopulateLevel(stage);
-            _cards.BuildBoard();
+            cards = _cards.BuildBoard(levelStates[stage], deck);
             StartCurrentStage();
 
             // TODO: Show stats and then change to new level
@@ -247,9 +245,9 @@ public sealed class GameState
         currentCardObject = null;
     }
 
- 
+
     // check list of bools if the last two elements are true (for matchHistory)
-    bool LastTwoAreTrue(IList<bool>? list)
+    bool LastTwoAreTrue(IList<bool> list)
     {
         return list != null &&
                list.Count >= 2 &&
@@ -267,7 +265,7 @@ public sealed class GameState
         foreach (CardObject card in cards)
         {
             var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
-            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 3));
+            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 2));
 
         }
     }
@@ -277,7 +275,6 @@ public sealed class GameState
         return cards.All(item => item.Data.CurrentState == Card.State.Finished);
     }
 
-  
     // Reveals the cards by lighting a light bulb.
     void Idea()
     {
@@ -285,11 +282,8 @@ public sealed class GameState
         GameObject cardsGO = GameObject.Find("Cards");
         CreateCards _cards = cardsGO.GetComponent<CreateCards>();
         _cards.TriggerLamp();
-
     }
 
-    // Spins all cards a couple turns
-    // requires the cards the themselves have knowledge about their position
     void Wind()
     {
         foreach (CardObject card in cards)
@@ -297,14 +291,5 @@ public sealed class GameState
             var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
             CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.SpinCard(2, 10));
         }
-    }
-
-    void NextLevel()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 }

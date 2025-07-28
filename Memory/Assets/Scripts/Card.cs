@@ -1,6 +1,5 @@
 ﻿using System;
 using Newtonsoft.Json;
-using UnityEngine;
 
 /// <summary>
 /// Runtime wrapper around the data loaded from cards.json.
