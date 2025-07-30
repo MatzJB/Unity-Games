@@ -12,14 +12,14 @@ Simple memory card game with some fun game mechanics.
 
 Note: Since the heat haze is rendered after transparents, a unlit transparent will not be affected by it. Everything that is opaque (the background) will.
 
-<img width="458" height="729" alt="image" src="https://github.com/user-attachments/assets/6ded5044-cbd6-4462-a841-c910aecad405" />
+<img width="458" alt="image" src="https://github.com/user-attachments/assets/6ded5044-cbd6-4462-a841-c910aecad405" />
 
 
 
 ### Heat haze 
 I use "heat haze", which I think make sense, since the cowboy is in the desert after all. I couldn't find any source of information that took me all the way, but Youtube helped me some. I had to create this shader twice because Unity crashed hard once and this shader became corrupt.
 
-<img width="1220" height="452" alt="image" src="https://github.com/user-attachments/assets/d9cd4421-6fd4-4ac7-83a3-e5c179d6d649" />
+<img width="500"  alt="image" src="https://github.com/user-attachments/assets/d9cd4421-6fd4-4ac7-83a3-e5c179d6d649" />
 
 
 ### Lighting up cards
@@ -30,7 +30,7 @@ The light buld bonus will light up the cards from behind when it is triggered. T
 You are a cowboy walking in the desert to Mexico. One the way you think about food and how you should order it in Spanish.
 
 
-<img width="1536" height="1024" alt="Eating" src="https://github.com/user-attachments/assets/876eb676-dd5f-41db-863b-28c01b1dda9c" />
+<img width="500" alt="Eating" src="https://github.com/user-attachments/assets/876eb676-dd5f-41db-863b-28c01b1dda9c" />
 
 
 ## Game mechanics
@@ -107,5 +107,8 @@ When I revisited the game in 2025, I realized, after I had gained some experienc
 * Add audio for: card flipping, wind, ambient, light bulb, maybe each card could have him (in his mind) mumble the word in spanish
   
 * Add blinking of the eyes of the cowboy
+
+<img width="500"  alt="Wanted" src="https://github.com/user-attachments/assets/b45956e8-466d-4213-9caf-3fc0f7c5b636" />
+
   
 
