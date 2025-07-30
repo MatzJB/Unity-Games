@@ -19,6 +19,9 @@ Note: Since the heat haze is rendered after transparents, a unlit transparent wi
 ### Heat haze 
 I use "heat haze", which I think make sense, since the cowboy is in the desert after all. I couldn't find any source of information that took me all the way, but Youtube helped me some. I had to create this shader twice because Unity crashed hard once and this shader became corrupt.
 
+<img width="1220" height="452" alt="image" src="https://github.com/user-attachments/assets/d9cd4421-6fd4-4ac7-83a3-e5c179d6d649" />
+
+
 ### Lighting up cards
 The light buld bonus will light up the cards from behind when it is triggered. This is a simple effect inside my double sided shader triggered by code when the specific bonus is used. 
 
