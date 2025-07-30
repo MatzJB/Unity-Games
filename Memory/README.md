@@ -17,7 +17,7 @@ Note: Since the heat haze is rendered after transparents, a unlit transparent wi
 
 
 ### Heat haze 
-I use "heat haze", which I think make sense, since the cowbor is in the desert after all. I couldn't find any source of information that took me all the way, but Youtube helped me some. I had to create this shader twice because Unity crashed hard once and this shader became corrupt.
+I use "heat haze", which I think make sense, since the cowboy is in the desert after all. I couldn't find any source of information that took me all the way, but Youtube helped me some. I had to create this shader twice because Unity crashed hard once and this shader became corrupt.
 
 ### Lighting up cards
 The light buld bonus will light up the cards from behind when it is triggered. This is a simple effect inside my double sided shader triggered by code when the specific bonus is used. 
@@ -25,6 +25,9 @@ The light buld bonus will light up the cards from behind when it is triggered. T
 
 ## Backstory
 You are a cowboy walking in the desert to Mexico. One the way you think about food and how you should order it in Spanish.
+
+
+<img width="1536" height="1024" alt="Eating" src="https://github.com/user-attachments/assets/876eb676-dd5f-41db-863b-28c01b1dda9c" />
 
 
 ## Game mechanics
