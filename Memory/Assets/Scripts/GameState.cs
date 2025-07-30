@@ -5,6 +5,7 @@ using System.Linq;
 using GameNamespace;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
@@ -38,6 +39,7 @@ public sealed class GameState
 
         cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
         matchHistory = new List<bool>();
+        //TODO: buildboard here
     }
 
     private GameState()
@@ -56,11 +58,22 @@ public sealed class GameState
         //TODO: check that cards are created!
     }
 
-    public static event Action OnDeckInitialized;
+    //TODO: check how this works
+    //public static event Action OnDeckInitialized;
 
-    public void InitializeDeck()
+    public void InitializeDeck(GameObject createCardsObject)
     {
-        OnDeckInitialized?.Invoke();
+        LevelState level = levelStates[stage];
+
+        CreateCards createCards = createCardsObject.GetComponent<CreateCards>();
+        if (createCards != null)
+        {
+            cards = createCards.BuildBoard(level, deck);
+        }
+        else
+        {
+            Debug.LogError("CreateCards component not found on the provided GameObject.");
+        }
     }
 
     public void DestroyCards()

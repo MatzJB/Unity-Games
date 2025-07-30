@@ -21,6 +21,7 @@ public class CreateCards : MonoBehaviour
         var gameState = GameState.Instance;
 
         //gameState.InitializeDeck();
+        GameState.Instance.InitializeDeck(this.gameObject);
     }
 
     public List<CardObject> BuildBoard(LevelState level, List<Card> deck)
@@ -85,6 +86,7 @@ public class CreateCards : MonoBehaviour
             mpb.SetFloat(LitID, 0f);
             rend.SetPropertyBlock(mpb);
             CardObject tmp = new CardObject(deck[i], go);
+            tmp.Data.SetState(Card.State.FaceDown);
             tmp.Data.Index = i;
             createdCards.Add(tmp);
         }
