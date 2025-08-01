@@ -4,11 +4,10 @@ using Assets;
 using UnityEngine;
 
 /*
- Responsible to instantiate the cards.
+ Responsible to instantiate the cards for each stage.
  */
 public class CreateCards : MonoBehaviour
 {
-    private GameObject cloud;
     Bounds cardBounds; // defined by the "cloud" gameObject
     GameObject lightBulb;
     GameObject cards__;
@@ -19,28 +18,20 @@ public class CreateCards : MonoBehaviour
     public void Awake()
     {
         var gameState = GameState.Instance;
-
-        //gameState.InitializeDeck();
         GameState.Instance.InitializeDeck(this.gameObject);
     }
 
     public List<CardObject> BuildBoard(LevelState level, List<Card> deck)
     {
         List<CardObject> createdCards = new List<CardObject>();
-
-        cloud = GameObject.Find("Cloud");
         cardBounds = Misc.GetBounds("Cloud");
         lightBulb = GameObject.Find("Light bulb");
-
-        //GameState.Instance.StartCurrentStage();
-
-        cards__ = GameObject.Find("master_card"); //master_card or Cards
+        cards__ = GameObject.Find("master_card"); // master_card or Cards
+        GameObject cards_ = GameObject.Find("Cards");
+        GameObject card_ = GameObject.Find("Card");
 
         int rows_ = level.Rows;
         int cols_ = level.Columns;
-
-        GameObject cards_ = GameObject.Find("Cards");
-        GameObject card_ = GameObject.Find("Card");
 
         float width = cardBounds.max.x - cardBounds.min.x;
         float height = cardBounds.max.y - cardBounds.min.y;
@@ -52,20 +43,32 @@ public class CreateCards : MonoBehaviour
         }
 
         Vector2 origin = new(cardBounds.min.x + 0.2f * width, cardBounds.min.y);
-        GameObject canvas = GameObject.Find("Canvas");
+        //GameObject canvas = GameObject.Find("Canvas");
 
         float scaling = Mathf.Max(width, height) / Mathf.Max(rows_ + 1, cols_ + 1);
+        string filename;
+        MaterialPropertyBlock mpb;
+        int frontTexPropId;
+        Texture2D tex;
+        Interaction currentCardInteraction;
+        Renderer rend;
+        Shader cardShader;
+
+        CardObject cardObject;
+        GameObject go;
+
+        CardIndex ci;
 
         for (int i = 0; i < cols_ * rows_; i++)
         {
             int jj = i % cols_; // column
             int ii = i / cols_; //row
 
-            GameObject go = Instantiate(card_);
-            CardIndex ci = go.AddComponent<CardIndex>();
+            go = Instantiate(card_);
+            ci = go.AddComponent<CardIndex>();
             ci.index = i;
 
-            var currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
+            currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
             go.transform.localScale = Vector3.one * 0.8f;
             go.transform.SetParent(cards_.transform, false);
             go.transform.localPosition = new Vector3(
@@ -74,30 +77,29 @@ public class CreateCards : MonoBehaviour
                     0f);
 
             go.transform.parent.transform.localScale = new Vector3(scaling, scaling, scaling);
-
-            Shader cardShader = Shader.Find("Shader Graphs/Card");
-            int frontTexPropId = Shader.PropertyToID("_FrontTexture");
-            string filename = deck[i].Path.Replace(".png", "");
-            Texture2D tex = Resources.Load<Texture2D>(filename);
-            Renderer rend = go.GetComponentInChildren<Renderer>(); // the one that’s already there
-            var mpb = new MaterialPropertyBlock();
+            cardShader = Shader.Find("Shader Graphs/Card");
+            frontTexPropId = Shader.PropertyToID("_FrontTexture");
+            filename = deck[i].Path.Replace(".png", "");
+            tex = Resources.Load<Texture2D>(filename);
+            rend = go.GetComponentInChildren<Renderer>(); // the one that’s already there
+            mpb = new MaterialPropertyBlock();
             mpb.SetTexture(frontTexPropId, tex);
             mpb.SetFloat(BulbTransparencyID, 0f);
             mpb.SetFloat(LitID, 0f);
             rend.SetPropertyBlock(mpb);
-            CardObject tmp = new CardObject(deck[i], go);
-            tmp.Data.SetState(Card.State.FaceDown);
-            tmp.Data.Index = i;
-            createdCards.Add(tmp);
+            cardObject = new CardObject(deck[i], go);
+            cardObject.Data.SetState(Card.State.FaceDown);
+            cardObject.Data.Index = i;
+            createdCards.Add(cardObject);
         }
 
         cards_.transform.position = origin;
-        Misc.Randomize(createdCards);
+        Misc.Randomize(createdCards); // TODO: doesn't seem to work, fix
         return createdCards;
     }
 
    
-
+    // TODO: create a new monobehavior for the UI animations, tie in to tumbleweed movement?
     public void TriggerLamp()
     {
         StartCoroutine(FlickerThenFade());
@@ -123,18 +125,18 @@ public class CreateCards : MonoBehaviour
         // TODO: check that the cards are updated properly
         while (elapsed < 3f)
         {
-            float onOff = UnityEngine.Random.value < 0.5f ? 1f : 0f;
+            float onOff = Random.value < 0.5f ? 1f : 0f;
 
             foreach (var cardObj in GameState.Instance.cards)
             {
                 Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
                 rend.GetPropertyBlock(mpb);
-                mpb.SetFloat(LitID, onOff * 0.046f);
+                mpb.SetFloat(LitID, onOff * 0.066f);
                 rend.SetPropertyBlock(mpb);
             }
 
             _bulbMat.SetFloat(OnID, onOff);
-            float wait = UnityEngine.Random.Range(0.05f, 0.15f);
+            float wait = Random.Range(0.05f, 0.15f);
 
             yield return new WaitForSeconds(wait);
             elapsed += wait;

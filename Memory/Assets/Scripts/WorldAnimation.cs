@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// TODO: handle animations of UI here
+
 public class WorldAnimation : MonoBehaviour
 {
 

@@ -5,7 +5,6 @@ using System.Linq;
 using GameNamespace;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Analytics;
 
 /* This class contains the game state of the game, level data, bonuses and penalties et cetera */
 // add state for menu, pause, running and end, replay
@@ -25,7 +24,7 @@ public sealed class GameState
     CardObject previousCardObject;
 
     public List<Card> deck; // all cards from all levels, loaded once
-    public List<CardObject> cards; // cards used for current level with gameobjects attached to each card
+    public List<CardObject> cards; // cards loaded each level
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
 
@@ -36,10 +35,8 @@ public sealed class GameState
     {
         //TODO: when we are at the end, stop the game
         LevelState level = levelStates[stage];
-
         cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
         matchHistory = new List<bool>();
-        //TODO: buildboard here
     }
 
     private GameState()
@@ -49,13 +46,10 @@ public sealed class GameState
 
         deck = JsonConvert.DeserializeObject<List<Card>>(cardDataFilename);
         levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
-
         startTime = Time.realtimeSinceStartup;
         stage = -1;
         AdvanceStage();
-
         PopulateLevel(stage);
-        //TODO: check that cards are created!
     }
 
     //TODO: check how this works
@@ -193,7 +187,6 @@ public sealed class GameState
             // Matching cards
             if (currentCardObject.Data.GroupIndex == previousCardObject.Data.GroupIndex)
             {
-                // do something, like remove the cards or mark them as matched
                 previousCardObject.Data.SetState(Card.State.Finished);
                 currentCardObject.Data.SetState(Card.State.Finished);
                 previousCardObject = null; // reset previous card
@@ -237,6 +230,7 @@ public sealed class GameState
         if (IsLevelDone())
         {
             //TODO: is there a better way to do this?
+            //TODO:  cache cardsGO (and _cards?)
             GameObject cardsGO = GameObject.Find("Cards");
             CreateCards _cards = cardsGO.GetComponent<CreateCards>();
 
@@ -292,6 +286,7 @@ public sealed class GameState
     void Idea()
     {
         //TODO: make this neater
+        // cache if possible, like I said above
         GameObject cardsGO = GameObject.Find("Cards");
         CreateCards _cards = cardsGO.GetComponent<CreateCards>();
         _cards.TriggerLamp();
