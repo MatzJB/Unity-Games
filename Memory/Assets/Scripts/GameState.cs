@@ -16,8 +16,8 @@ public sealed class GameState
 
     // TODO: check if we need to serialize:
     [Header("Level & asset files")]
-    [SerializeField] string levelDataFile = "levelData.json";
-    [SerializeField] string cardJsonFile = "cardData.json";
+    [SerializeField] string levelDataFile = "levelData2.json";
+    [SerializeField] string cardJsonFile = "cardData2.json";
 
     // We use cardobject so we can access the card data and the gameobject at the same time for bookkeeping (gameState) but also animation (gameObject)
     CardObject currentCardObject;
@@ -62,7 +62,11 @@ public sealed class GameState
         CreateCards createCards = createCardsObject.GetComponent<CreateCards>();
         if (createCards != null)
         {
-            cards = createCards.BuildBoard(level, deck);
+            // create subdeck filtered wrt cateogry
+
+            List<Card> filteredDeck = deck.Where(card => card.Category == level.Category).ToList();
+
+            cards = createCards.BuildBoard(level, filteredDeck);
         }
         else
         {

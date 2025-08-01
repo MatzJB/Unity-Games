@@ -1,0 +1,42 @@
+[
+    { "groupIndex": 1, "id": 1, "category": "location", "path": "card textures/cards/Exterior.png" },
+    { "groupIndex": 1, "id": 2, "category": "location", "path": "card textures/cards/Exterior_text.png" },
+    { "groupIndex": 2, "id": 3, "category": "location", "path": "card textures/cards/Interior.png" },
+    { "groupIndex": 2, "id": 4, "category": "location", "path": "card textures/cards/Interior_text.png" },
+    { "groupIndex": 3, "id": 5, "category": "location", "path": "card textures/cards/Alto.png" },
+    { "groupIndex": 3, "id": 6, "category": "location", "path": "card textures/cards/Alto_text.png" },
+
+    { "groupIndex": 4, "id": 7, "category": "entree", "path": "card textures/cards/Churros.png" },
+    { "groupIndex": 4, "id": 8, "category": "entree", "path": "card textures/cards/Churros_text.png" },
+    { "groupIndex": 5, "id": 9, "category": "entree", "path": "card textures/cards/Empanada.png" },
+    { "groupIndex": 5, "id": 10, "category": "entree", "path": "card textures/cards/Empanada_text.png" },
+    { "groupIndex": 6, "id": 11, "category": "entree", "path": "card textures/cards/Sopes.png" },
+    { "groupIndex": 6, "id": 12, "category": "entree", "path": "card textures/cards/Sopes_text.png" },
+    { "groupIndex": 7, "id": 13, "category": "entree", "path": "card textures/cards/Tacos.png" },
+    { "groupIndex": 7, "id": 14, "category": "entree", "path": "card textures/cards/Tacos_text.png" },
+    { "groupIndex": 8, "id": 15, "category": "entree", "path": "card textures/cards/Tamales.png" },
+    { "groupIndex": 8, "id": 16, "category": "entree", "path": "card textures/cards/Tamales_text.png" },
+
+    { "groupIndex": 9, "id": 17, "category": "drinks", "path": "card textures/cards/Agua.png" },
+    { "groupIndex": 9, "id": 18, "category": "drinks", "path": "card textures/cards/Agua_text.png" },
+    { "groupIndex": 10, "id": 19, "category": "drinks", "path": "card textures/cards/Caffee.png" },
+    { "groupIndex": 10, "id": 20, "category": "drinks", "path": "card textures/cards/Caffee_text.png" },
+    { "groupIndex": 11, "id": 21, "category": "drinks", "path": "card textures/cards/Cerveza.png" },
+    { "groupIndex": 11, "id": 22, "category": "drinks", "path": "card textures/cards/Cerveza_text.png" },
+    { "groupIndex": 12, "id": 23, "category": "drinks", "path": "card textures/cards/Chocolate.png" },
+    { "groupIndex": 12, "id": 24, "category": "drinks", "path": "card textures/cards/Chocolate_text.png" },
+    { "groupIndex": 13, "id": 25, "category": "drinks", "path": "card textures/cards/Leche.png" },
+    { "groupIndex": 13, "id": 26, "category": "drinks", "path": "card textures/cards/Leche_text.png" },
+
+    { "groupIndex": 14, "id": 27, "category": "meal", "path": "card textures/cards/Chilaquiles.png" },
+    { "groupIndex": 14, "id": 28, "category": "meal", "path": "card textures/cards/Chilaquiles_text.png" },
+
+    { "groupIndex": 15, "id": 29, "category": "payment", "path": "card textures/cards/División.png" },
+    { "groupIndex": 15, "id": 30, "category": "payment", "path": "card textures/cards/División_text.png" },
+    { "groupIndex": 16, "id": 31, "category": "payment", "path": "card textures/cards/Effectivo.png" },
+    { "groupIndex": 16, "id": 32, "category": "payment", "path": "card textures/cards/Effectivo_text.png" },
+    { "groupIndex": 17, "id": 33, "category": "payment", "path": "card textures/cards/Pago.png" },
+    { "groupIndex": 17, "id": 34, "category": "payment", "path": "card textures/cards/Pago_text.png" },
+    { "groupIndex": 18, "id": 35, "category": "payment", "path": "card textures/cards/Tarjeta.png" },
+    { "groupIndex": 18, "id": 36, "category": "payment", "path": "card textures/cards/Tarjeta_text.png" }
+]

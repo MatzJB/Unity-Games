@@ -80,6 +80,7 @@ public class CreateCards : MonoBehaviour
             cardShader = Shader.Find("Shader Graphs/Card");
             frontTexPropId = Shader.PropertyToID("_FrontTexture");
             filename = deck[i].Path.Replace(".png", "");
+            //TODO: check if filename exist!
             tex = Resources.Load<Texture2D>(filename);
             rend = go.GetComponentInChildren<Renderer>(); // the one that’s already there
             mpb = new MaterialPropertyBlock();
