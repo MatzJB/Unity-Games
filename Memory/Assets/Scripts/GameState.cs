@@ -16,8 +16,8 @@ public sealed class GameState
 
     // TODO: check if we need to serialize:
     [Header("Level & asset files")]
-    [SerializeField] string levelDataFile = "levelData2.json";
-    [SerializeField] string cardJsonFile = "cardData2.json";
+    private readonly string levelDataFile = "levelData2.json";
+    private readonly string cardJsonFile = "cardData2.json";
 
     // We use cardobject so we can access the card data and the gameobject at the same time for bookkeeping (gameState) but also animation (gameObject)
     CardObject currentCardObject;
@@ -37,7 +37,7 @@ public sealed class GameState
         if (_instance == null)
             _instance = new GameState(script);
 
-
+        // is gamestate initialized before this is run?
        _instance.LoadNextStage();
 
 
