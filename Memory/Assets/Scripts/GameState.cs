@@ -22,22 +22,34 @@ public sealed class GameState
     // We use cardobject so we can access the card data and the gameobject at the same time for bookkeeping (gameState) but also animation (gameObject)
     CardObject currentCardObject;
     CardObject previousCardObject;
-
+    // in the editor I want to start from stage 1 each time
     public List<Card> deck; // all cards from all levels, loaded once
     public List<CardObject> cards; // cards loaded each level
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
 
-    private static readonly GameState _instance = new GameState();
+
+    private static GameState _instance;
     public static GameState Instance => _instance;
 
-    private void PopulateLevel(int stage)
+    public static void Initialize(CreateCards script)
     {
-        //TODO: when we are at the end, stop the game
-        LevelState level = levelStates[stage];
-        cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
-        matchHistory = new List<bool>();
+        if (_instance == null)
+            _instance = new GameState(script);
+
+
+       _instance.LoadNextStage();
+
+
     }
+
+    public CreateCards Script { get; }
+
+    private GameState(CreateCards script)
+    {
+        Script = script;
+    }
+
 
     private GameState()
     {
@@ -48,18 +60,26 @@ public sealed class GameState
         levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
         startTime = Time.realtimeSinceStartup;
         stage = -1;
-        AdvanceStage();
-        PopulateLevel(stage);
     }
 
-    //TODO: check how this works
-    //public static event Action OnDeckInitialized;
 
-    public void InitializeDeck(GameObject createCardsObject)
+    private void PopulateLevel(int stage)
     {
+        //TODO: when we are at the end, stop the game
+        LevelState level = levelStates[stage];
+        cards = Enumerable.Repeat<CardObject>(null, level.Rows * level.Columns).ToList();
+        matchHistory = new List<bool>();
+    }
+
+    private void LoadNextStage()
+    {
+        DestroyCards();
+        AdvanceStage();
+        PopulateLevel(stage);
+
         LevelState level = levelStates[stage];
 
-        CreateCards createCards = createCardsObject.GetComponent<CreateCards>();
+        CreateCards createCards = Script.GetComponent<CreateCards>();
         if (createCards != null)
         {
             // TODO: something is wrong here, fix
@@ -70,7 +90,11 @@ public sealed class GameState
         {
             Debug.LogError("CreateCards component not found on the provided GameObject.");
         }
+        StartCurrentStage();
     }
+
+    //TODO: check how this works
+    //public static event Action OnDeckInitialized;
 
     public void DestroyCards()
     {
@@ -241,11 +265,15 @@ public sealed class GameState
             //TODO: add a intro text, some pausing and then advance to the next stage
             CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(2));
 
-            AdvanceStage();
-            DestroyCards();
-            PopulateLevel(stage);
-            cards = _cards.BuildBoard(levelStates[stage], deck);
-            StartCurrentStage();
+            LoadNextStage();
+
+            //AdvanceStage();
+            //DestroyCards();
+            //PopulateLevel(stage);
+
+            // TODO: use same code as first time e run
+            //cards = _cards.BuildBoard(levelStates[stage], deck);
+            //StartCurrentStage();
 
             // TODO: Show stats and then change to new level
         }

@@ -18,7 +18,9 @@ public class CreateCards : MonoBehaviour
     public void Awake()
     {
         var gameState = GameState.Instance;
-        GameState.Instance.InitializeDeck(this.gameObject);
+        //TODO: can we call something else here that just starts the game, stores the gameobject of the createcards and proceeds with the game?
+        //GameState.Instance.InitializeDeck(this.gameObject);
+        GameState.Initialize(this);
     }
 
     public List<CardObject> BuildBoard(LevelState level, List<Card> deck)
@@ -71,6 +73,8 @@ public class CreateCards : MonoBehaviour
             currentCardInteraction = go.transform.GetChild(0).GetComponent<Interaction>(); // the_card has the interaction script
             go.transform.localScale = Vector3.one * 0.8f;
             go.transform.SetParent(cards_.transform, false);
+            // TODO. put in a concentric pattern instead
+            // given the outer limits of the cloud, scale the cards to fit them being placed concentrically/spiral
             go.transform.localPosition = new Vector3(
                     jj,
                     ii,
@@ -90,7 +94,7 @@ public class CreateCards : MonoBehaviour
             rend.SetPropertyBlock(mpb);
             cardObject = new CardObject(deck[i], go);
             cardObject.Data.SetState(Card.State.FaceDown);
-            cardObject.Data.Index = i;
+            cardObject.Data.Index = ci.index; // store index of card
             createdCards.Add(cardObject);
         }
 
