@@ -132,7 +132,7 @@ public class CreateCards : MonoBehaviour
             {
                 Renderer rend = cardObj.View.GetComponentInChildren<Renderer>();
                 rend.GetPropertyBlock(mpb);
-                mpb.SetFloat(LitID, onOff * 0.066f);
+                mpb.SetFloat(LitID, onOff * 0.566f);
                 rend.SetPropertyBlock(mpb);
             }
 

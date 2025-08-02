@@ -62,10 +62,8 @@ public sealed class GameState
         CreateCards createCards = createCardsObject.GetComponent<CreateCards>();
         if (createCards != null)
         {
-            // create subdeck filtered wrt cateogry
-
+            // TODO: something is wrong here, fix
             List<Card> filteredDeck = deck.Where(card => card.Category == level.Category).ToList();
-
             cards = createCards.BuildBoard(level, filteredDeck);
         }
         else

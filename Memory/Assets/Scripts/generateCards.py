@@ -33,7 +33,9 @@ text_color = (0, 0, 0)      # black
 
 # Load a font (adjust path or use default)
 try:
-    font = ImageFont.truetype("arial.ttf", 200)
+    # font = ImageFont.truetype("Rye-Regular.ttf", 600, encoding='nuic')
+
+    font = ImageFont.truetype(r'Rye-Regular.ttf', 180)
 except:
     font = ImageFont.load_default()
 
