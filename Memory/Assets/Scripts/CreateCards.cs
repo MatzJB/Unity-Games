@@ -17,7 +17,7 @@ public class CreateCards : MonoBehaviour
 
     public void Awake()
     {
-        var gameState = GameState.Instance;
+        //var gameState = GameState.Instance;
         //TODO: can we call something else here that just starts the game, stores the gameobject of the createcards and proceeds with the game?
         //GameState.Instance.InitializeDeck(this.gameObject);
         GameState.Initialize(this);

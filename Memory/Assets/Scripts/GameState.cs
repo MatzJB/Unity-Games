@@ -11,57 +11,63 @@ using UnityEngine;
 
 public sealed class GameState
 {
+    private static GameState _instance;
+    public static GameState Instance => _instance ?? throw new Exception("GameState not initialized");
+
+    private readonly CreateCards _script;
+
     public int stage; // current stage, reference levelState
     public float startTime; // used for animation
 
     // TODO: check if we need to serialize:
-    [Header("Level & asset files")]
     private readonly string levelDataFile = "levelData2.json";
     private readonly string cardJsonFile = "cardData2.json";
 
     // We use cardobject so we can access the card data and the gameobject at the same time for bookkeeping (gameState) but also animation (gameObject)
-    CardObject currentCardObject;
-    CardObject previousCardObject;
+    public CardObject currentCardObject;
+    public CardObject previousCardObject;
     // in the editor I want to start from stage 1 each time
     public List<Card> deck; // all cards from all levels, loaded once
     public List<CardObject> cards; // cards loaded each level
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
 
-
-    private static GameState _instance;
-    public static GameState Instance => _instance;
+    private GameState(CreateCards script)
+    {
+        _script = script;
+        stage = -1;
+        startTime = Time.time;
+        deck = new List<Card>();
+        cards = new List<CardObject>();
+        levelStates = new List<LevelState>();
+        matchHistory = new List<bool>();
+        LoadLevelData(levelDataFile);
+        LoadCardData(cardJsonFile);
+        startTime = Time.realtimeSinceStartup;
+    }
 
     public static void Initialize(CreateCards script)
     {
         if (_instance == null)
+        {
             _instance = new GameState(script);
-
-        // is gamestate initialized before this is run?
-       _instance.LoadNextStage();
-
-
+            _instance.LoadNextStage();
+        }
     }
 
-    public CreateCards Script { get; }
-
-    private GameState(CreateCards script)
+    private void LoadLevelData(string fileName)
     {
-        Script = script;
+        string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
+        string levelData = File.ReadAllText(filePath);
+        levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelData);
     }
 
-
-    private GameState()
+    private void LoadCardData(string fileName)
     {
-        string cardDataFilename = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, cardJsonFile));
-        string levelDataFilename = File.ReadAllText(Path.Combine(Application.streamingAssetsPath, levelDataFile));
-
-        deck = JsonConvert.DeserializeObject<List<Card>>(cardDataFilename);
-        levelStates = JsonConvert.DeserializeObject<List<LevelState>>(levelDataFilename);
-        startTime = Time.realtimeSinceStartup;
-        stage = -1;
+        string filePath = Path.Combine(Application.streamingAssetsPath, fileName);
+        string cardData = File.ReadAllText(filePath);
+        deck = JsonConvert.DeserializeObject<List<Card>>(cardData);
     }
-
 
     private void PopulateLevel(int stage)
     {
@@ -78,8 +84,8 @@ public sealed class GameState
         PopulateLevel(stage);
 
         LevelState level = levelStates[stage];
+        CreateCards createCards = _script.GetComponent<CreateCards>();
 
-        CreateCards createCards = Script.GetComponent<CreateCards>();
         if (createCards != null)
         {
             // TODO: something is wrong here, fix
@@ -93,9 +99,7 @@ public sealed class GameState
         StartCurrentStage();
     }
 
-    //TODO: check how this works
-    //public static event Action OnDeckInitialized;
-
+    // TODO: check how this works
     public void DestroyCards()
     {
         foreach (CardObject card in cards)
@@ -125,7 +129,7 @@ public sealed class GameState
     public void AdvanceStage()
     {
         stage++;
-        
+
         StageText = $"Stage {levelStates[stage].Stage}";
     }
 
@@ -266,16 +270,6 @@ public sealed class GameState
             CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(2));
 
             LoadNextStage();
-
-            //AdvanceStage();
-            //DestroyCards();
-            //PopulateLevel(stage);
-
-            // TODO: use same code as first time e run
-            //cards = _cards.BuildBoard(levelStates[stage], deck);
-            //StartCurrentStage();
-
-            // TODO: Show stats and then change to new level
         }
 
         previousCardObject = null;
@@ -303,7 +297,6 @@ public sealed class GameState
         {
             var currentCardInteraction = card.View.transform.GetChild(0).GetComponent<Interaction>();
             CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.DelayedFlipCard(false, 2));
-
         }
     }
 
