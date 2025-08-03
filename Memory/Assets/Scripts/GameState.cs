@@ -277,9 +277,13 @@ public sealed class GameState
         currentCardObject = null;
     }
 
+    //switch between stages
     private static IEnumerator DelayAndLoad(CardObject cardObject, float seconds)
     {
         var interaction = cardObject.View.transform.GetChild(0).GetComponent<Interaction>();
+        
+        
+        
         yield return interaction.Delay(seconds);
 
         _instance.LoadNextStage();
