@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -267,17 +268,25 @@ public sealed class GameState
             var currentCardInteraction = currentCardObject.View.transform.GetChild(0).GetComponent<Interaction>();
 
             //TODO: add a intro text, some pausing and then advance to the next stage
-            CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(2));
-
-            LoadNextStage();
+            //CoroutineRunner.Instance.RunCoroutine(currentCardInteraction.Delay(2));
+            CoroutineRunner.Instance.RunCoroutine(DelayAndLoad(currentCardObject, 5f));
+            //LoadNextStage();
         }
 
         previousCardObject = null;
         currentCardObject = null;
     }
 
+    private static IEnumerator DelayAndLoad(CardObject cardObject, float seconds)
+    {
+        var interaction = cardObject.View.transform.GetChild(0).GetComponent<Interaction>();
+        yield return interaction.Delay(seconds);
+
+        _instance.LoadNextStage();
+    }
 
     // check list of bools if the last two elements are true (for matchHistory)
+    //TODO: move into static class Misc
     bool LastTwoAreTrue(IList<bool> list)
     {
         return list != null &&
