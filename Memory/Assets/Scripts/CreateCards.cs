@@ -98,6 +98,8 @@ public class CreateCards : MonoBehaviour
             createdCards.Add(cardObject);
         }
 
+
+        //cards_.transform.parent.transform.localScale = new Vector3(scaling, scaling, scaling);
         cards_.transform.position = origin;
         Misc.Randomize(createdCards); // TODO: doesn't seem to work, fix
         return createdCards;

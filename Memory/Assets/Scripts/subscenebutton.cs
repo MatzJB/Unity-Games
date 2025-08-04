@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 public class SubsceneButton : MonoBehaviour
 {
     public float scaleFactor = 1.1f;
-    public float speed = 10f;
+    public float speed = 2;
 
     private Transform target;
     private Vector3 originalScale;
@@ -12,7 +12,7 @@ public class SubsceneButton : MonoBehaviour
 
     void Start()
     {
-        target = transform.parent; // the text
+        target = transform.parent;
         originalScale = target.localScale;
         targetScale = originalScale;
     }
@@ -32,24 +32,20 @@ public class SubsceneButton : MonoBehaviour
         targetScale = originalScale;
     }
 
-
-
     void OnMouseDown()
     {
         string subsceneName = ParseTargetName();
         HandleSubsceneClick(subsceneName);
     }
 
-
     private string ParseTargetName()
     {
-        // Expects name like "Text_GotoPlay"
         string name = target.name;
 
         if (name.StartsWith("Text_Goto"))
             return name.Substring("Text_Goto".Length);
 
-        return name; // fallback
+        return name;
     }
 
     private void HandleSubsceneClick(string subsceneName)
