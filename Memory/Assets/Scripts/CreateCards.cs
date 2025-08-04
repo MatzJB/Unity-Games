@@ -80,7 +80,7 @@ public class CreateCards : MonoBehaviour
                     ii,
                     0f);
 
-            go.transform.parent.transform.localScale = new Vector3(scaling, scaling, scaling);
+            //go.transform.parent.transform.localScale = new Vector3(scaling, scaling, scaling);
             cardShader = Shader.Find("Shader Graphs/Card");
             frontTexPropId = Shader.PropertyToID("_FrontTexture");
             filename = deck[i].Path.Replace(".png", "");

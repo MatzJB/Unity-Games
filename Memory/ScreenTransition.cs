@@ -1,35 +1,56 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
-
-public class ScreenFader : MonoBehaviour
+﻿public class ScreenTransition : MonoBehaviour
 {
-    public Image fadeImage;
-    public float fadeDuration = 1f;
+    public MeshRenderer blackScreen;
+    public Transform cameraRig;
+    public Transform locationPlay;
+    public Camera mainCamera;
+    private Dictionary<string, Transform> subsceneAnchors;
 
-    public IEnumerator FadeOut()
+    void Awake()
     {
-        yield return Fade(0f, 1f);
+        var anchorRoot = GameObject.Find("SubsceneAnchors");
+        subsceneAnchors = anchorRoot.GetComponentsInChildren<Transform>()
+            .Where(t => t != anchorRoot.transform)
+            .ToDictionary(t => t.name, t => t);
     }
 
-    public IEnumerator FadeIn()
+
+    private void Start()
     {
-        yield return Fade(1f, 0f);
+        cameraRig = Camera.main.transform;
+
+        StartCoroutine(TransitionToPlayScene());
     }
 
-    private IEnumerator Fade(float from, float to)
-    {
-        float elapsed = 0f;
-        Color c = fadeImage.color;
 
-        while (elapsed < fadeDuration)
+    public IEnumerator TransitionToPlayScene()
+    {
+        yield return FadeBlackScreen(1f);
+
+        // move camera
+        locationPlay = GameObject.Find("LocationPlay").transform;
+        cameraRig.position = locationPlay.position;
+
+        // fade in some scene text etc...
+        yield return new WaitForSeconds(1f);
+
+        yield return FadeBlackScreen(0f);
+    }
+
+    private IEnumerator FadeBlackScreen(float targetAlpha)
+    {
+        var mat = blackScreen.material;
+        Color c = mat.color;
+        float startAlpha = c.a;
+        float duration = 1f;
+
+        for (float t = 0; t < duration; t += Time.deltaTime)
         {
-            elapsed += Time.deltaTime;
-            float alpha = Mathf.Lerp(from, to, elapsed / fadeDuration);
-            fadeImage.color = new Color(c.r, c.g, c.b, alpha);
+            c.a = Mathf.Lerp(startAlpha, targetAlpha, t / duration);
+            mat.color = c;
             yield return null;
         }
-
-        fadeImage.color = new Color(c.r, c.g, c.b, to);
+        c.a = targetAlpha;
+        mat.color = c;
     }
 }
