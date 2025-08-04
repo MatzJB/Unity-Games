@@ -7,6 +7,9 @@
 
 ## Idea
 Simple memory card game with some fun game mechanics.
+The feeling should be that the cowboy character is a comic book character. 
+
+This is mainly because he is not moving because I don't have any ability to animate. He is a sprite and at most I can add poses, just like a comic book. Continuing with that idea, maybe when he change position, we should see a page turn. This illusion is broken by the fact that the world is moving, is it only in his mind?
 
 ## Shader ideas
 
