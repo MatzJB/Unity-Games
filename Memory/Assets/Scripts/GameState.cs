@@ -130,7 +130,6 @@ public sealed class GameState
     public void AdvanceStage()
     {
         stage++;
-
         StageText = $"Stage {levelStates[stage].Stage}";
     }
 
@@ -277,20 +276,24 @@ public sealed class GameState
         currentCardObject = null;
     }
 
-    //switch between stages
+    // Switch between stages
     private static IEnumerator DelayAndLoad(CardObject cardObject, float seconds)
     {
         var interaction = cardObject.View.transform.GetChild(0).GetComponent<Interaction>();
-        
-        
-        
+        //...
+
+        //FadeBlackIn
+
+        //update the text on the stage
+        //Text_StageTitle = "EY!";
+
         yield return interaction.Delay(seconds);
 
         _instance.LoadNextStage();
     }
 
     // check list of bools if the last two elements are true (for matchHistory)
-    //TODO: move into static class Misc
+    // TODO: move into static class Misc
     bool LastTwoAreTrue(IList<bool> list)
     {
         return list != null &&
@@ -321,7 +324,7 @@ public sealed class GameState
     // Reveals the cards by lighting a light bulb.
     void Idea()
     {
-        //TODO: make this neater
+        // TODO: make this neater
         // cache if possible, like I said above
         GameObject cardsGO = GameObject.Find("Cards");
         CreateCards _cards = cardsGO.GetComponent<CreateCards>();

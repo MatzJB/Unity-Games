@@ -7,7 +7,7 @@ public class BonusClickable : MonoBehaviour
 
     void Awake()
     {
-        UpdateVisibility();  // hide/show based on default availability
+        UpdateVisibility();
         GameState.Instance.OnBonusAvailabilityChanged += UpdateVisibility;
     }
 
