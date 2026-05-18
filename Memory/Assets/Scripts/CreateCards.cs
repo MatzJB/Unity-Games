@@ -45,8 +45,6 @@ public class CreateCards : MonoBehaviour
         }
 
         Vector2 origin = new(cardBounds.min.x + 0.2f * width, cardBounds.min.y);
-        //GameObject canvas = GameObject.Find("Canvas");
-
         float scaling = Mathf.Max(width, height) / Mathf.Max(rows_ + 1, cols_ + 1);
         string filename;
         MaterialPropertyBlock mpb;

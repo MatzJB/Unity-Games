@@ -33,6 +33,9 @@ public sealed class GameState
     public List<LevelState> levelStates;
     private List<bool> matchHistory; // keep a record of the matching cards, used for bonuses and penalties
 
+
+  
+
     private GameState(CreateCards script)
     {
         _script = script;
@@ -86,6 +89,7 @@ public sealed class GameState
 
         LevelState level = levelStates[stage];
         CreateCards createCards = _script.GetComponent<CreateCards>();
+        //TitleCardText = level.StageName;
 
         if (createCards != null)
         {
@@ -113,6 +117,7 @@ public sealed class GameState
         cards.Clear();
     }
 
+    //backing field
     public event System.Action<string> OnStageTextChanged;
 
     string _stageText;
@@ -127,10 +132,27 @@ public sealed class GameState
         }
     }
 
+    public event System.Action<string> OnTitleCardTextChanged;
+
+    string _titleCardText;
+    public string TitleCardText
+    {
+        get => _titleCardText;
+        set
+        {
+            if (_titleCardText == value) return;
+            _titleCardText = value;
+            OnTitleCardTextChanged?.Invoke(_titleCardText);
+        }
+    }
+
+
     public void AdvanceStage()
     {
         stage++;
         StageText = $"Stage {levelStates[stage].Stage}";
+        TitleCardText= $"Stage {levelStates[stage].StageName}";
+
     }
 
     // Button related code
@@ -276,6 +298,9 @@ public sealed class GameState
         currentCardObject = null;
     }
 
+  
+
+
     // Switch between stages
     private static IEnumerator DelayAndLoad(CardObject cardObject, float seconds)
     {
@@ -286,6 +311,9 @@ public sealed class GameState
 
         //update the text on the stage
         //Text_StageTitle = "EY!";
+  
+
+
 
         yield return interaction.Delay(seconds);
 

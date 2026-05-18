@@ -36,9 +36,9 @@ public class Interaction : MonoBehaviour
             float y = Mathf.Cos(elapsedSeconds / 60) * 30;
             float elapsedMs = elapsedSeconds * 1000f;
 
-            transform.parent.position = new Vector3(transform.parent.position.x,
-                                                  transform.parent.position.y + 0.02f * Mathf.Cos(elapsedSeconds + transform.parent.position.x % 5 + transform.parent.position.y),
-                                                    transform.parent.position.z);
+            //transform.parent.position = new Vector3(transform.parent.position.x,
+            //                                      transform.parent.position.y + 0.02f * Mathf.Cos(elapsedSeconds + transform.parent.position.x % 5 + transform.parent.position.y),
+            //                                        transform.parent.position.z);
 
             angle = Mathf.Cos(transform.parent.position.y + 2f * elapsedSeconds) * 5f;
             transform.parent.localEulerAngles = new Vector3(0, 0, angle);
