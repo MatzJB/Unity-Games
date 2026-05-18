@@ -1,6 +1,40 @@
 # Re:memoria
 ![image](https://github.com/user-attachments/assets/0c8964f8-721a-4b91-a135-2b794a5c2dc2)
 
+
+## Idea
+The classic "memory" game.
+It started as a mock up game to prove to my wife a game could be accomplished in a couple of hours.
+
+## Backstory
+You are a cowboy walking in the desert toward Mexico and with nothing else to do he thinks about the spanish words he needs to remember when he arrives. In the game he stops to think and the thoughts are depicted using a cloud. I chose a cartoony "thought cloud" because I could not think of a way to show the desert and have the cards hanging in the air (it doesn't make sense). However, having the cards be a figment of his imagination does make sense, so they float in the cloud! Continuing on that theme, I thought, why add interesting physics to the cloud, so I added lightning. Then I thought, why not add a light bulb, that is the actual object you use when you tell the audience "I have an idea". In this setting the lamp will light up the cards from behind so you can see the symbols.
+
+
+
+## To Do
+In the original game, you flip all the cards first, then make pairs. In this version, every time you match two cards, a lamp in the thought-cloud lights up and backlights the cards. I am thinking of adding a tornado effect that shuffles the cards inside the cloud.
+
+I also thought about matching 3 or 4 cards but that is probably too difficult.
+
+- [ ] Create a menu to start, a pop up when game is over and a menu that you can access whenever.
+- [ ] Add some chill guitar music.
+- [ ] Create highscore based on time or number of flips.
+- [ ] Heat haze effect on the desert
+- [ ] make the cards move and rotate a little, they ate floating after all
+- [ ] When hovering the cards (with the mouse) they should increase in size and the opposite when not hovering
+- [ ] when the game is done, show a splash screen of some sort
+- [ ] start with 8 cards, then next game 12, then increase the number of cards
+- [ ] add JSON with levels
+- [ ] between games, introduce the new cards floating int the cloud and enter a new scene, the cowboy has walked quite a bit
+- [ ] at the end, the arrives in mexico and he gets his reward, some food, stringing together what the cards showed previousl
+
+
+
+
+# Development
+
+First version spring 2020:
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47" alt="memory2">
 </p>
@@ -69,7 +103,49 @@ I want the content to be cached at runtime when I first run the game (deck and l
 
 ## Obstacles along the way and how I solved them
 
-* I had an idea to have three camera positions, showing three backgrounds with UI elements. In doing so I let the background act as a anchor point for the camera position. The problem is the transforms are not baked in in Unity, meaning I had to scale the sprite, but this affect the children of that parent, which produced very odd behavior of the cards. I realized this and I now use an empty gameobject as an anchor and parent for the "scenes" I need, which works.
+### Placing the cards
+In my first version I placed the cards using a hard-coded position and I calculated the positions of the cards based on the monitor size. 
+I am aware there is `Grid` but I just wanted to get started without extra obstacles. Well, this was one obstacle regardless.
+https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Grid.html
+So, I settled on a solution that gets the position of the cloud where the cards are supposed to be. I realized that the card size is not normalized, which made my head ache (why didn't I normalize the size of the card, makes life so much easier), so I finally normalized the card dimensions.
+I calculate the width of the cloud, the origin and I just scale the Cards which all the cards are under and voila.
+I instanciate the card object and I name it based on the index in the 2d array, so when I need to know what card I hit, I extract that information from the card name.
+Note to self: I can add this metadata to the object without having to parse the string, right?
+
+
+
+### Making the cards actually float
+I wanted the cards look as though they really float. The actual card node has flip animation, so I couldn't add the rotation there, it will reset because it is keyframed. So my solution was to add a parent node to that node, I call it Card. 
+```
+**Before**
+
++ Cards
+    + the_card_1_1 (holds animation)
+         master_card
+         master_card_back
+    ...
+
+**After**
+
++ Cards
+    + Card_1_1 (holds initial rotation)
+       + the_card_1_1 (holds animation)
+            master_card
+            master_card_back
+    ...
+```
+
+
+
+### Procedurally generated cards
+The cards were created in code to allow different number of cards. I now settle for 2 matchings, 3 is too difficult to manange for players.
+
+* I started using hard coded cards and then switched to a JSON file to curate the cards. Everything is in the JSON: the groupIndex (same index means matching card), cardIndex (unique ID), the category (for levels, might be changed to level instead).
+
+* Cloud shader
+
+* Thought I could create a simple double-sided shader for turning the cards. 
+I was thinking of creating a box, but settled with 2 facing sprites and letting them rotate around a pivot point.
 
 * I am using URP at the moment with a fullscren effect. I wanted to add a simple haze effect but I realized that in doing this I can only use opaque material and alpha cutting.
 To avoid the FS shader to affect some parts I simply use the transparent materials on those item.
