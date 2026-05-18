@@ -4,17 +4,22 @@
 
 ## Idea
 The classic "memory" game.
-It started as a mock up game to prove to my wife a game could be accomplished in a couple of hours.
+It started as a mock up game to prove to my wife a game could be accomplished in a couple of hours, this was back in 2020. I recently picked it up again and thought I would improve the structure and playability.
 
 ## Backstory
-You are a cowboy walking in the desert toward Mexico and with nothing else to do he thinks about the spanish words he needs to remember when he arrives. In the game he stops to think and the thoughts are depicted using a cloud. I chose a cartoony "thought cloud" because I could not think of a way to show the desert and have the cards hanging in the air (it doesn't make sense). However, having the cards be a figment of his imagination does make sense, so they float in the cloud! Continuing on that theme, I thought, why add interesting physics to the cloud, so I added lightning. Then I thought, why not add a light bulb, that is the actual object you use when you tell the audience "I have an idea". In this setting the lamp will light up the cards from behind so you can see the symbols.
+You play as a cowboy crossing the desert toward Mexico, exhausted and starving. As the journey drags on, his thoughts take over.
 
+These thoughts form a “thought cloud” where language appears as floating cards. Words, symbols, and fragments drift, collide, and reorganize. You experiment, learn patterns, and build meaning under pressure.
+
+At the end, you reach a restaurant. You don’t type or speak Spanish. You assemble it.
+
+Using the cards you’ve learned, you construct phrases to communicate with the waiter. Get it right, you eat. Get it wrong, the restaurant fades. It was just a mirage.
+
+## Game mechanics
+In the original game, you flip all the cards first, then make pairs. In this version, every time you match two cards, you will get a bonus to bail you out. There are two bonuses: a lamp lighting up, showing the other side of the cards or the wind, which will make the cards spin for a awhile.
 
 
 ## To Do
-In the original game, you flip all the cards first, then make pairs. In this version, every time you match two cards, a lamp in the thought-cloud lights up and backlights the cards. I am thinking of adding a tornado effect that shuffles the cards inside the cloud.
-
-I also thought about matching 3 or 4 cards but that is probably too difficult.
 
 - [ ] Create a menu to start, a pop up when game is over and a menu that you can access whenever.
 - [ ] Add some chill guitar music.
@@ -28,9 +33,6 @@ I also thought about matching 3 or 4 cards but that is probably too difficult.
 - [ ] between games, introduce the new cards floating int the cloud and enter a new scene, the cowboy has walked quite a bit
 - [ ] at the end, the arrives in mexico and he gets his reward, some food, stringing together what the cards showed previousl
 
-
-
-
 # Development
 
 First version spring 2020:
@@ -38,7 +40,6 @@ First version spring 2020:
 <p align="center">
   <img src="https://github.com/user-attachments/assets/07e36dee-4316-4046-aa9e-91084795fe47" alt="memory2">
 </p>
-
 
 Updated version (didn't touch the code in 5 years) 2025:
 
@@ -53,7 +54,6 @@ So, I settled on a solution that gets the position of the cloud where the cards 
 I calculate the width of the cloud, the origin and I just scale the Cards which all the cards are under and voila.
 I instanciate the card object and I name it based on the index in the 2d array, so when I need to know what card I hit, I extract that information from the card name.
 Note to self: I can add this metadata to the object without having to parse the string, right?
-
 
 
 ### Making the cards actually float
