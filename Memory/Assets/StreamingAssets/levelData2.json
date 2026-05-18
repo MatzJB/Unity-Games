@@ -1,0 +1,7 @@
+[
+  { "stage": 1, "stageName": "Where should I sit?", "cardsToMatch": 6, "rows": 2, "category": "location" },
+  { "stage": 2, "stageName": "The entree", "cardsToMatch": 10,  "rows": 3, "category": "entree" },
+  { "stage": 3, "stageName": "Getting cold", "cardsToMatch": 10,  "rows": 2, "category": "drinks" },
+  { "stage": 4, "stageName": "Getting Warm", "cardsToMatch": 2,  "rows": 2, "category": "meal" },
+  { "stage": 5, "stageName": "About to leave",   "cardsToMatch": 8, "rows": 3, "category": "payment" }
+]

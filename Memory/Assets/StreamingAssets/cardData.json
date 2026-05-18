@@ -1,0 +1,123 @@
+[
+    {
+        "groupIndex": 0,
+        "id": 0,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/ar.png"
+    },
+    {
+        "groupIndex": 0,
+        "id": 1,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/ar_text.png"
+    },
+     
+    {
+        "groupIndex": 3,
+        "id": 4,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/ca.png"
+    },
+    {
+        "groupIndex": 3,
+        "id": 5,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/ca_text.png"
+    },
+    {
+        "groupIndex": 4,
+        "id": 6,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/cn.png"
+    },
+    {
+        "groupIndex": 4,
+        "id": 7,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/cn_text.png"
+    },
+    {
+        "groupIndex": 5,
+        "id": 8,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/es.png"
+    },
+    {
+        "groupIndex": 5,
+        "id": 9,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/es_text.png"
+    },
+    {
+        "groupIndex": 6,
+        "id": 10,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/fi.png"
+    },
+    {
+        "groupIndex": 6,
+        "id": 11,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/fi_text.png"
+    },
+    {
+        "groupIndex": 7,
+        "id": 12,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/il.png"
+    },
+    {
+        "groupIndex": 7,
+        "id": 13,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/il_text.png"
+    },
+    {
+        "groupIndex": 8,
+        "id": 14,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/it.png"
+    },
+    {
+        "groupIndex": 8,
+        "id": 15,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/it_text.png"
+    },
+    {
+        "groupIndex": 9,
+        "id": 16,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/jp.png"
+    },
+    {
+        "groupIndex": 9,
+        "id": 17,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/jp_text.png"
+    },
+    {
+        "groupIndex": 10,
+        "id": 18,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/se.png"
+    },
+    {
+        "groupIndex": 10,
+        "id": 19,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/se_text.png"
+    },
+    {
+        "groupIndex": 11,
+        "id": 20,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/us.png"
+    },
+    {
+        "groupIndex": 11,
+        "id": 21,
+        "category": "country flags",
+        "path": "card textures/flags_1.1/us_text.png"
+    }
+]
