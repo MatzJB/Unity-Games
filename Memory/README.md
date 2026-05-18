@@ -114,7 +114,7 @@ When I revisited the game in 2025, I realized, after I had gained some experienc
 * Add blinking of the eyes of the cowboy
 
 
-<img width="500"  alt="Wanted" src="https://github.com/user-attachments/assets/b45956e8-466d-4213-9caf-3fc0f7c5b636" />
+<img width="400"  alt="Wanted" src="https://github.com/user-attachments/assets/b45956e8-466d-4213-9caf-3fc0f7c5b636" />
 
   
 
