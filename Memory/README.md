@@ -43,6 +43,14 @@ First version spring 2020:
 
 Updated version (didn't touch the code in 5 years) 2025:
 
+<p align="center">
+<img width="600" height="333" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/d6d12c52-7a52-47d1-aa50-2293be6e2745" />
+</p>
+
+
+
+
+
 
 ## Obstacles along the way
 
