@@ -1,5 +1,7 @@
 # Re:memoria
-![image](https://github.com/user-attachments/assets/0c8964f8-721a-4b91-a135-2b794a5c2dc2)
+<p align="center">
+<img width="800" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/0c8964f8-721a-4b91-a135-2b794a5c2dc2">
+</p>
 
 
 ## Idea
